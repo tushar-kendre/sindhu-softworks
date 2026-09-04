@@ -34,16 +34,16 @@ function CaseCard({ item }: { item: CaseStudy }) {
         </CardHeader>
         <CardContent className="mt-auto flex flex-col gap-4">
           {item.outcomes.length ? (
-            <dl className="grid grid-cols-2 gap-3">
+            <ul className="grid grid-cols-2 gap-3">
               {item.outcomes.slice(0, 2).map((o) => (
-                <div key={o.label}>
-                  <dd className="font-display text-2xl font-semibold" style={{ fontVariationSettings: '"opsz" 72' }}>
+                <li key={o.label}>
+                  <p className="font-display text-2xl font-semibold" style={{ fontVariationSettings: '"opsz" 72' }}>
                     {o.value}
-                  </dd>
-                  <dt className="text-xs text-muted-foreground">{o.label}</dt>
-                </div>
+                  </p>
+                  <p className="text-xs text-muted-foreground">{o.label}</p>
+                </li>
               ))}
-            </dl>
+            </ul>
           ) : null}
           <ul className="flex flex-wrap gap-1.5" aria-label="Stack">
             {item.stack.slice(0, 5).map((t) => (
@@ -81,11 +81,11 @@ function CaseCard({ item }: { item: CaseStudy }) {
         </DialogHeader>
         <div className="space-y-6 text-sm leading-relaxed">
           <section>
-            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Problem</h4>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Problem</p>
             <p className="mt-2">{item.problem}</p>
           </section>
           <section>
-            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Approach</h4>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Approach</p>
             <ul className="mt-2 list-disc space-y-2 pl-5">
               {item.approach.map((a) => (
                 <li key={a}>{a}</li>
@@ -94,21 +94,21 @@ function CaseCard({ item }: { item: CaseStudy }) {
           </section>
           {item.outcomes.length ? (
             <section>
-              <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Outcomes</h4>
-              <dl className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Outcomes</p>
+              <ul className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {item.outcomes.map((o) => (
-                  <div key={o.label}>
-                    <dd className="font-display text-2xl font-semibold" style={{ fontVariationSettings: '"opsz" 72' }}>
+                  <li key={o.label}>
+                  <p className="font-display text-2xl font-semibold" style={{ fontVariationSettings: '"opsz" 72' }}>
                       {o.value}
-                    </dd>
-                    <dt className="text-xs text-muted-foreground">{o.label}</dt>
-                  </div>
+                    </p>
+                    <p className="text-xs text-muted-foreground">{o.label}</p>
+                  </li>
                 ))}
-              </dl>
+              </ul>
             </section>
           ) : null}
           <section>
-            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Stack</h4>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Stack</p>
             <ul className="mt-2 flex flex-wrap gap-1.5">
               {item.stack.map((t) => (
                 <li key={t}>

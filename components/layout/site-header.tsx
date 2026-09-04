@@ -40,7 +40,7 @@ export function SiteHeader() {
         Skip to content
       </a>
       <div className="container flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`${site.name} home`}>
+        <Link href="/" className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <LogoLockup className="text-base" markClassName="h-8 w-8" />
         </Link>
 

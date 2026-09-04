@@ -17,7 +17,7 @@ export function Services() {
             </CardHeader>
             <CardContent className="flex flex-1 flex-col gap-6">
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">What you get</h4>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">What you get</p>
                 <ul className="mt-3 space-y-2 text-sm">
                   {s.youGet.map((line) => (
                     <li key={line} className="flex gap-2">
@@ -28,11 +28,11 @@ export function Services() {
                 </ul>
               </div>
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Typical shape</h4>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Typical shape</p>
                 <p className="mt-2 text-sm">{s.shape}</p>
               </div>
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Good fit if</h4>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Good fit if</p>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
                   {s.goodFitIf.map((line) => (
                     <li key={line}>{line}</li>

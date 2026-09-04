@@ -21,10 +21,13 @@ export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    // Belt and braces: load when near the viewport, or after the page has been idle
-    // for a moment (covers browsers where the observer never fires, e.g. hidden tabs).
-    const idle = window.setTimeout(() => setNear(true), 2500)
-    if (typeof IntersectionObserver === "undefined") return () => window.clearTimeout(idle)
+    // Belt and braces: load when near the viewport, or once the browser has been idle
+    // for a while (covers browsers where the observer never fires, e.g. hidden tabs).
+    // The long timeout keeps the React Flow chunk out of the first-load critical path.
+    const hasRic = typeof window.requestIdleCallback === "function"
+    const idle = hasRic ? window.requestIdleCallback(() => setNear(true), { timeout: 8000 }) : window.setTimeout(() => setNear(true), 8000)
+    const cancelIdle = () => (hasRic ? window.cancelIdleCallback(idle) : window.clearTimeout(idle))
+    if (typeof IntersectionObserver === "undefined") return cancelIdle
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
@@ -37,7 +40,7 @@ export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
     io.observe(el)
     return () => {
       io.disconnect()
-      window.clearTimeout(idle)
+      cancelIdle()
     }
   }, [])
 
