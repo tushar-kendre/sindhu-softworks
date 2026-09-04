@@ -16,7 +16,7 @@ export type PlayNodeData = {
   hasTarget: boolean
   hasSource: boolean
 }
-export type PlayNode = Node<PlayNodeData, "input" | "rule" | "output">
+export type PlayNode = Node<PlayNodeData, "playInput" | "playRule" | "playOutput">
 export type PlayNodeProps = NodeProps<PlayNode>
 
 export const dotTone = {

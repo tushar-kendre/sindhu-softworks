@@ -20,7 +20,8 @@ import type { PlayNode } from "./nodes/shared"
 import { PlaygroundInputs } from "./playground-inputs"
 import { Presets } from "./presets"
 
-const nodeTypes = { input: InputNode, rule: RuleNode, output: OutputNode }
+// Custom type names avoid React Flow's built-in "input"/"output"/"default" node styles.
+const nodeTypes = { playInput: InputNode, playRule: RuleNode, playOutput: OutputNode }
 const graph = { inputs: playground.inputs, nodes: playground.nodes }
 const inputDefs = new Map(playground.inputs.map((i) => [i.id, i]))
 const nodeById = new Map(playground.nodes.map((n) => [n.id, n]))
@@ -70,7 +71,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
       const r = result.results.get(def.id)!
       const hasSource = allEdges.some((e) => e.source === def.id && layout[e.target])
       const hasTarget = allEdges.some((e) => e.target === def.id && layout[e.source])
-      const type = def.kind === "input" ? "input" : def.kind === "output" ? "output" : "rule"
+      const type = def.kind === "input" ? "playInput" : def.kind === "output" ? "playOutput" : "playRule"
       const inputDef = def.kind === "input" ? inputDefs.get(def.input) : undefined
       list.push({
         id: def.id,
