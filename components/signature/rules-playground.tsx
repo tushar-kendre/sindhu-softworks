@@ -302,7 +302,12 @@ function ScenarioPlayground({ scenario, onReady }: { scenario: Scenario; onReady
           zoomOnDoubleClick={false}
           preventScrolling={false}
           proOptions={{ hideAttribution: true }}
-          onNodeClick={(_, node) => select(node.id)}
+          onNodeClick={(event, node) => {
+            // Taps on a control inside the node change a value; they should not also open the explanation.
+            const target = event.target as HTMLElement | null
+            if (target?.closest("input, button, [role='switch'], [role='slider'], [role='radio'], [role='radiogroup']")) return
+            select(node.id)
+          }}
           onInit={(inst) => {
             instance.current = inst
             onReady?.()
