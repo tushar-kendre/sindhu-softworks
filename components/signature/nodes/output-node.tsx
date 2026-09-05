@@ -17,7 +17,7 @@ export const OutputNode = memo(function OutputNode(props: PlayNodeProps) {
   return (
     <NodeFrame {...props} className={cn("border-2", tone[result.state])}>
       <p className="text-[11px] font-medium uppercase tracking-[0.12em] opacity-80">{def.label}</p>
-      <p className="mt-0.5 font-display text-lg font-semibold leading-tight" aria-live="polite">
+      <p key={String(result.value)} className="mt-0.5 origin-left font-display text-lg font-semibold leading-tight motion-safe:animate-pop" aria-live="polite">
         {String(result.value)}
       </p>
     </NodeFrame>

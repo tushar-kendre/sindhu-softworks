@@ -50,6 +50,7 @@ const config = {
       animation: {
         "fade-up": "fade-up 0.6s ease-out both",
         "edge-flow": "edge-flow 0.8s linear infinite",
+        pop: "pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both",
       },
     },
   },

@@ -14,6 +14,7 @@ export type Scenario = {
 export type PlaygroundContent = {
   eyebrow: string
   title: string
+  hint: string
   caption: string
   footnote: string
   sourceLabel: string
@@ -80,14 +81,19 @@ const orderFulfilment: Scenario = {
       out_status: { x: 1048, y: 192 },
     },
     mobile: {
-      r_stock: { x: 0, y: 0 },
-      r_value: { x: 190, y: 0 },
-      r_fraud: { x: 0, y: 90 },
-      c_ready: { x: 190, y: 90 },
-      n_highvalue: { x: 0, y: 190 },
-      n_flag: { x: 190, y: 190 },
-      c_review: { x: 95, y: 290 },
-      out_status: { x: 95, y: 390 },
+      in_paid: { x: 0, y: 0 },
+      in_address: { x: 190, y: 0 },
+      in_stock: { x: 0, y: 90 },
+      in_value: { x: 190, y: 90 },
+      in_fraud: { x: 95, y: 180 },
+      r_stock: { x: 0, y: 300 },
+      r_value: { x: 190, y: 300 },
+      r_fraud: { x: 0, y: 390 },
+      c_ready: { x: 190, y: 390 },
+      n_highvalue: { x: 0, y: 490 },
+      n_flag: { x: 190, y: 490 },
+      c_review: { x: 95, y: 590 },
+      out_status: { x: 95, y: 690 },
     },
   },
 }
@@ -149,13 +155,18 @@ const pullRequest: Scenario = {
       out_status: { x: 1048, y: 192 },
     },
     mobile: {
-      r_approvals: { x: 0, y: 0 },
-      r_cov: { x: 190, y: 0 },
-      r_size: { x: 0, y: 90 },
-      c_gate: { x: 190, y: 90 },
-      n_big: { x: 0, y: 190 },
-      c_human: { x: 190, y: 190 },
-      out_status: { x: 95, y: 290 },
+      in_tests: { x: 0, y: 0 },
+      in_approvals: { x: 190, y: 0 },
+      in_cov: { x: 0, y: 90 },
+      in_lines: { x: 190, y: 90 },
+      in_migr: { x: 95, y: 180 },
+      r_approvals: { x: 0, y: 300 },
+      r_cov: { x: 190, y: 300 },
+      r_size: { x: 0, y: 390 },
+      c_gate: { x: 190, y: 390 },
+      n_big: { x: 0, y: 490 },
+      c_human: { x: 190, y: 490 },
+      out_status: { x: 95, y: 590 },
     },
   },
 }
@@ -163,6 +174,7 @@ const pullRequest: Scenario = {
 export const playground: PlaygroundContent = {
   eyebrow: "Live rules engine",
   title: "A decision engine you can poke at",
+  hint: "Flip the switches, drag the sliders, or edit a threshold on any rule. Every node explains itself.",
   caption:
     "Decisions as declarative graphs: inputs feed rules, rules feed combinators, and the output explains itself node by node. Switch scenarios and notice that only the data changed. The engine is the same 150 lines.",
   footnote:
