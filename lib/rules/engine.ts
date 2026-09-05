@@ -20,6 +20,7 @@ import type {
   NodeState,
   RuleNode,
   Status,
+  Tone,
 } from "./types"
 
 const OP_SYMBOL: Record<CompareOp, string> = {
@@ -111,9 +112,6 @@ function compare(left: number, op: CompareOp, right: number): boolean {
   }
 }
 
-function stateFor(status: Status): NodeState {
-  return status === "COMPLIANT" ? "pass" : status === "NON-COMPLIANT" ? "fail" : "review"
-}
 
 export function evaluate(graph: Graph, inputs: Record<string, InputValue>): EvalResult {
   const inputDefs = new Map(graph.inputs.map((i) => [i.id, i]))
@@ -121,7 +119,7 @@ export function evaluate(graph: Graph, inputs: Record<string, InputValue>): Eval
   const order = topologicalOrder(graph.nodes)
   const results = new Map<string, NodeResult>()
   const trace: string[] = []
-  let status: Status | undefined
+  let decision: { status: string; tone: Tone } | undefined
 
   const get = (id: string): NodeResult => {
     const r = results.get(id)
@@ -221,25 +219,25 @@ export function evaluate(graph: Graph, inputs: Record<string, InputValue>): Eval
         break
       }
       case "output": {
-        let chosen: Status = node.fallback
+        let chosen = node.fallback
         let because = "no rule matched, so the fallback applies"
         for (const rule of node.rules) {
           const dep = get(rule.when)
           if (dep.pass) {
-            chosen = rule.status
+            chosen = { status: rule.status, tone: rule.tone }
             because = `"${byId.get(rule.when)?.label ?? rule.when}" matched first`
             break
           }
         }
-        status = chosen
+        decision = chosen
         result = {
           id,
           kind: node.kind,
-          value: chosen,
-          pass: chosen === "COMPLIANT",
-          state: stateFor(chosen),
-          expression: [...node.rules.map((r) => `${byId.get(r.when)?.label ?? r.when} → ${r.status}`), `otherwise → ${node.fallback}`].join("; "),
-          reason: `${chosen}: ${because}`,
+          value: chosen.status,
+          pass: chosen.tone === "pass",
+          state: chosen.tone,
+          expression: [...node.rules.map((r) => `${byId.get(r.when)?.label ?? r.when} → ${r.status}`), `otherwise → ${node.fallback.status}`].join("; "),
+          reason: `${chosen.status}: ${because}`,
           dependsOn: node.rules.map((r) => r.when),
         }
         break
@@ -250,6 +248,6 @@ export function evaluate(graph: Graph, inputs: Record<string, InputValue>): Eval
     trace.push(`${node.label}: ${result.reason}`)
   }
 
-  if (!status) throw new RulesError("Graph has no output node")
-  return { status, results, order, trace }
+  if (!decision) throw new RulesError("Graph has no output node")
+  return { status: decision.status, tone: decision.tone, results, order, trace }
 }

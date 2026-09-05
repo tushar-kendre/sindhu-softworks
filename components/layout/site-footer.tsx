@@ -18,9 +18,9 @@ export function SiteFooter() {
           <address className="mt-3 not-italic leading-relaxed">
             <span className="font-medium">{site.legalName}</span>
             <br />
-            A sole proprietorship registered in {address.country}.
+            A sole proprietorship registered in {address.country} (GST regular registration).
             <br />
-            Proprietor: Tushar Kendre
+            Proprietor: {site.proprietor}
             <br />
             {address.lines.map((l) => (
               <span key={l}>

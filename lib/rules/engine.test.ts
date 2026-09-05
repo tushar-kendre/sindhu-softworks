@@ -3,9 +3,9 @@ import { defaultInputs, edgesOf, evaluate, RulesError, topologicalOrder } from "
 import type { Graph, RuleNode } from "./types"
 import { playground } from "@/content/playground"
 
-const graph: Graph = { inputs: playground.inputs, nodes: playground.nodes }
+describe.each(playground.scenarios)("scenario $id", (scenario) => {
+  const graph: Graph = { inputs: scenario.inputs, nodes: scenario.nodes }
 
-describe("playground graph", () => {
   it("has a valid topological order and no dangling refs", () => {
     const order = topologicalOrder(graph.nodes)
     expect(order).toHaveLength(graph.nodes.length)
@@ -15,16 +15,21 @@ describe("playground graph", () => {
     }
   })
 
-  it.each(playground.presets)("preset '$label' → $expected", (preset) => {
+  it.each(scenario.presets)("preset '$label' → $expected", (preset) => {
     const inputs = { ...defaultInputs(graph.inputs), ...preset.values }
     const result = evaluate(graph, inputs)
     expect(result.status).toBe(preset.expected)
   })
 
-  it("NEEDS REVIEW wins even when the schedule is satisfied", () => {
-    const inputs = { ...defaultInputs(graph.inputs), doc_confidence: 0.5 }
-    expect(evaluate(graph, inputs).status).toBe("NEEDS REVIEW")
-    expect(evaluate(graph, { ...inputs, exemption_on_file: true }).status).toBe("NEEDS REVIEW")
+  it("review outranks a passing gate", () => {
+    const reviewPreset = scenario.presets.find((p) => {
+      const r = evaluate(graph, { ...defaultInputs(graph.inputs), ...p.values })
+      return r.tone === "review"
+    })!
+    // the review preset only touches one input, so the pass-path is still satisfied underneath
+    const r = evaluate(graph, { ...defaultInputs(graph.inputs), ...reviewPreset.values })
+    expect(r.tone).toBe("review")
+    expect(evaluate(graph, defaultInputs(graph.inputs)).tone).toBe("pass")
   })
 
   it("explains every node", () => {
@@ -38,12 +43,12 @@ describe("playground graph", () => {
   })
 
   it("every layout position refers to a real node", () => {
-    for (const layout of Object.values(playground.layout)) {
+    for (const layout of Object.values(scenario.layout)) {
       for (const id of Object.keys(layout)) {
         expect(graph.nodes.some((n) => n.id === id)).toBe(true)
       }
     }
-    for (const node of graph.nodes) expect(playground.layout.desktop[node.id]).toBeDefined()
+    for (const node of graph.nodes) expect(scenario.layout.desktop[node.id]).toBeDefined()
   })
 })
 
@@ -67,5 +72,18 @@ describe("engine edge cases", () => {
       nodes: [{ id: "in_x", kind: "input", input: "x", label: "x" }],
     }
     expect(() => evaluate(g, {})).toThrow(/no output/)
+  })
+
+  it("output rules are ordered: first matching rule wins", () => {
+    const g: Graph = {
+      inputs: [{ id: "x", label: "x", control: { type: "toggle" }, default: true }],
+      nodes: [
+        { id: "in_x", kind: "input", input: "x", label: "x" },
+        { id: "not_x", kind: "not", input: "in_x", label: "not x" },
+        { id: "out", kind: "output", label: "out", rules: [{ when: "in_x", status: "A", tone: "pass" }, { when: "not_x", status: "B", tone: "fail" }], fallback: { status: "C", tone: "review" } },
+      ],
+    }
+    expect(evaluate(g, { x: true }).status).toBe("A")
+    expect(evaluate(g, { x: false }).status).toBe("B")
   })
 })

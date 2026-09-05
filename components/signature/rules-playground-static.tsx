@@ -16,9 +16,10 @@ const stroke: Record<NodeState, string> = {
  * the same content and engine as the live component, so it cannot drift.
  */
 export function RulesPlaygroundStatic() {
-  const graph = { inputs: playground.inputs, nodes: playground.nodes }
+  const scenario = playground.scenarios[0]
+  const graph = { inputs: scenario.inputs, nodes: scenario.nodes }
   const result = evaluate(graph, defaultInputs(graph.inputs))
-  const layout = playground.layout.desktop
+  const layout = scenario.layout.desktop
   const { w, h } = NODE_SIZE.desktop
   const { width, height } = graphBounds(layout, "desktop")
   const pad = 8
@@ -31,7 +32,7 @@ export function RulesPlaygroundStatic() {
       aria-labelledby="static-graph-title"
       preserveAspectRatio="xMidYMid meet"
     >
-      <title id="static-graph-title">{`Rules graph: ${playground.nodes.length} nodes evaluating to ${result.status}`}</title>
+      <title id="static-graph-title">{`${scenario.title} Rules graph: ${scenario.nodes.length} nodes evaluating to ${result.status}`}</title>
       <g fill="none" strokeWidth={2} strokeLinecap="round">
         {edgesOf(graph).map((e) => {
           const d = edgePath(layout, "desktop", e)
@@ -40,7 +41,7 @@ export function RulesPlaygroundStatic() {
           return <path key={`${e.source}-${e.target}`} d={d} stroke={stroke[st]} />
         })}
       </g>
-      {playground.nodes.map((node) => {
+      {scenario.nodes.map((node) => {
         const p = layout[node.id]
         const r = result.results.get(node.id)
         if (!p || !r) return null

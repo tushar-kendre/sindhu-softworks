@@ -6,6 +6,7 @@ export function jsonLd() {
     "@type": "Person",
     "@id": `${site.url}/#founder`,
     name: founder.person.name,
+    alternateName: site.proprietor,
     jobTitle: founder.person.title,
     url: site.links.personal,
     sameAs: [site.links.linkedin, site.links.github, site.links.personal],

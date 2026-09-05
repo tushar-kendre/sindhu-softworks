@@ -6,12 +6,13 @@ import { SlidersHorizontal } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
-import { playground, type Preset } from "@/content/playground"
+import { playground, type Preset, type Scenario } from "@/content/playground"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { defaultInputs, edgesOf, evaluate } from "@/lib/rules/engine"
 import { NODE_SIZE } from "@/lib/rules/layout"
 import type { InputValue } from "@/lib/rules/types"
+import { cn } from "@/lib/utils"
 import { ExplainPanel } from "./explain-panel"
 import { InputNode } from "./nodes/input-node"
 import { OutputNode } from "./nodes/output-node"
@@ -22,38 +23,74 @@ import { Presets } from "./presets"
 
 // Custom type names avoid React Flow's built-in "input"/"output"/"default" node styles.
 const nodeTypes = { playInput: InputNode, playRule: RuleNode, playOutput: OutputNode }
-const graph = { inputs: playground.inputs, nodes: playground.nodes }
-const inputDefs = new Map(playground.inputs.map((i) => [i.id, i]))
-const nodeById = new Map(playground.nodes.map((n) => [n.id, n]))
-const labelOf = (id: string) => nodeById.get(id)?.label ?? id
-const allEdges = edgesOf(graph)
-const OUTPUT_ID = playground.nodes.find((n) => n.kind === "output")!.id
 const GRAPH_HEIGHT = 470
 
 export function RulesPlayground({ onReady }: { onReady?: () => void }) {
+  const [scenarioId, setScenarioId] = useState(playground.scenarios[0].id)
+  const scenario = playground.scenarios.find((s) => s.id === scenarioId) ?? playground.scenarios[0]
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-3 px-4 pt-4 md:flex-row md:items-center md:justify-between md:px-6">
+        <h3 className="font-display text-lg md:text-xl">{scenario.title}</h3>
+        <div role="tablist" aria-label="Scenario" className="inline-flex self-start rounded-md border bg-background p-0.5">
+          {playground.scenarios.map((s) => (
+            <button
+              key={s.id}
+              role="tab"
+              type="button"
+              aria-selected={s.id === scenario.id}
+              onClick={() => setScenarioId(s.id)}
+              className={cn(
+                "rounded px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm",
+                s.id === scenario.id ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* key resets inputs, preset and selection when the scenario changes */}
+      <ScenarioPlayground key={scenario.id} scenario={scenario} onReady={onReady} />
+    </div>
+  )
+}
+
+function ScenarioPlayground({ scenario, onReady }: { scenario: Scenario; onReady?: () => void }) {
   const isMobile = useIsMobile()
   const reducedMotion = useReducedMotion()
   const kind = isMobile ? "mobile" : "desktop"
-  const layout = playground.layout[kind]
+  const layout = scenario.layout[kind]
 
-  const [values, setValues] = useState<Record<string, InputValue>>(() => defaultInputs(playground.inputs))
-  const [presetId, setPresetId] = useState<string | null>(playground.presets[0]?.id ?? null)
-  const [selectedId, setSelectedId] = useState<string>(OUTPUT_ID)
+  const graph = useMemo(() => ({ inputs: scenario.inputs, nodes: scenario.nodes }), [scenario])
+  const inputDefs = useMemo(() => new Map(scenario.inputs.map((i) => [i.id, i])), [scenario])
+  const nodeById = useMemo(() => new Map(scenario.nodes.map((n) => [n.id, n])), [scenario])
+  const allEdges = useMemo(() => edgesOf(graph), [graph])
+  const outputId = useMemo(() => scenario.nodes.find((n) => n.kind === "output")!.id, [scenario])
+  const labelOf = useCallback((id: string) => nodeById.get(id)?.label ?? id, [nodeById])
+
+  const [values, setValues] = useState<Record<string, InputValue>>(() => defaultInputs(scenario.inputs))
+  const [presetId, setPresetId] = useState<string | null>(scenario.presets[0]?.id ?? null)
+  const [selectedId, setSelectedId] = useState<string>(outputId)
   const [explainOpen, setExplainOpen] = useState(false)
   const instance = useRef<ReactFlowInstance<PlayNode, FlowEdge> | null>(null)
 
-  const result = useMemo(() => evaluate(graph, values), [values])
+  const result = useMemo(() => evaluate(graph, values), [graph, values])
 
   const setValue = useCallback((id: string, v: InputValue) => {
     setPresetId(null)
     setValues((prev) => (prev[id] === v ? prev : { ...prev, [id]: v }))
   }, [])
 
-  const applyPreset = useCallback((p: Preset) => {
-    setValues({ ...defaultInputs(playground.inputs), ...p.values })
-    setPresetId(p.id)
-    setSelectedId(OUTPUT_ID)
-  }, [])
+  const applyPreset = useCallback(
+    (p: Preset) => {
+      setValues({ ...defaultInputs(scenario.inputs), ...p.values })
+      setPresetId(p.id)
+      setSelectedId(outputId)
+    },
+    [scenario, outputId],
+  )
 
   const select = useCallback(
     (id: string) => {
@@ -65,7 +102,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
 
   const nodes = useMemo<PlayNode[]>(() => {
     const list: PlayNode[] = []
-    for (const def of playground.nodes) {
+    for (const def of scenario.nodes) {
       const pos = layout[def.id]
       if (!pos) continue
       const r = result.results.get(def.id)!
@@ -100,7 +137,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
       })
     }
     return list
-  }, [layout, kind, result, values, selectedId, select, setValue])
+  }, [scenario, layout, kind, result, values, selectedId, select, setValue, allEdges, inputDefs])
 
   const edges = useMemo<FlowEdge[]>(
     () =>
@@ -119,7 +156,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
             focusable: false,
           }
         }),
-    [layout, result, reducedMotion],
+    [allEdges, layout, result, reducedMotion],
   )
 
   // Refit whenever the container resizes or the layout kind flips.
@@ -143,13 +180,13 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
     }
   }, [kind])
 
-  const selectedNode = nodeById.get(selectedId) ?? nodeById.get(OUTPUT_ID)!
+  const selectedNode = nodeById.get(selectedId) ?? nodeById.get(outputId)!
   const selectedResult = result.results.get(selectedNode.id)!
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-wrap items-center gap-3 px-4 pt-4 md:px-6">
-        <Presets presets={playground.presets} activeId={presetId} onSelect={applyPreset} />
+    <>
+      <div className="mt-3 flex flex-wrap items-center gap-3 px-4 md:px-6">
+        <Presets presets={scenario.presets} activeId={presetId} onSelect={applyPreset} />
         {isMobile ? (
           <Drawer>
             <DrawerTrigger asChild>
@@ -162,7 +199,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
                 <DrawerTitle>Inputs</DrawerTitle>
                 <DrawerDescription>Change a value and the graph re-evaluates instantly.</DrawerDescription>
               </DrawerHeader>
-              <PlaygroundInputs inputs={playground.inputs} values={values} onChange={setValue} />
+              <PlaygroundInputs inputs={scenario.inputs} values={values} onChange={setValue} />
             </DrawerContent>
           </Drawer>
         ) : null}
@@ -215,9 +252,7 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
         ) : (
           <ExplainPanel node={selectedNode} result={selectedResult} labelOf={labelOf} onPick={setSelectedId} />
         )}
-        {isMobile ? (
-          <p className="text-xs text-muted-foreground">Tap any node to see why it has its value.</p>
-        ) : null}
+        {isMobile ? <p className="text-xs text-muted-foreground">Tap any node to see why it has its value.</p> : null}
         <div className={isMobile ? "sr-only" : "min-w-0"}>
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Evaluation trace</p>
           <ol aria-live="polite" aria-atomic="true" className="mt-2 max-h-48 space-y-1 overflow-y-auto font-mono text-[11px] leading-relaxed text-muted-foreground">
@@ -230,6 +265,6 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
           </ol>
         </div>
       </div>
-    </div>
+    </>
   )
 }

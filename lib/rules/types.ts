@@ -1,4 +1,7 @@
-export type Status = "COMPLIANT" | "NON-COMPLIANT" | "NEEDS REVIEW"
+export type Tone = "pass" | "fail" | "review"
+/** A decision label, e.g. "SHIP TODAY". Scenario-defined, not fixed by the engine. */
+export type Status = string
+export type Decision = { status: Status; tone: Tone }
 export type InputValue = number | boolean
 export type CompareOp = ">=" | "<=" | "==" | ">" | "<"
 export type NodeState = "pass" | "fail" | "neutral" | "review"
@@ -28,8 +31,8 @@ export type RuleNode =
       id: string
       kind: "output"
       label: string
-      rules: { when: string; status: Status }[]
-      fallback: Status
+      rules: { when: string; status: Status; tone: Tone }[]
+      fallback: Decision
     }
 
 export type Edge = { source: string; target: string }
@@ -55,6 +58,7 @@ export type NodeResult = {
 
 export type EvalResult = {
   status: Status
+  tone: Tone
   results: Map<string, NodeResult>
   order: string[]
   trace: string[]

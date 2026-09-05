@@ -7,6 +7,8 @@ export type ServiceId = z.infer<typeof ServiceId>
 export const SiteSchema = z.object({
   name: z.string(),
   legalName: z.string(),
+  /** Proprietor's name as it appears on the GST certificate */
+  proprietor: z.string(),
   tagline: z.string(),
   description: z.string(),
   url: z.string().url(),

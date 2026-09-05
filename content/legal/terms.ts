@@ -15,7 +15,7 @@ export const terms: LegalDoc = {
     {
       heading: "The interactive demo",
       paragraphs: [
-        "The rules-engine playground on the home page is an illustration. It is not a medical or compliance tool and must not be used to make decisions about any real person's immunization status.",
+        "The rules-engine playground on the home page is an illustration of a technique. Its scenarios are fictional and it must not be used to make decisions about any real order, code change, person or account.",
       ],
     },
     {
