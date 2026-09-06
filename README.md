@@ -1,10 +1,10 @@
 # Sindhu Softworks — company website
 
-Next.js 16 · React 19 · Once UI · React Flow · Resend. Design rules live in `DESIGN.md`; agents start at `AGENTS.md`.
+Next.js 16 · React 19 · Once UI · React Flow. No back end: the contact form opens the visitor's mail app. Design rules live in `DESIGN.md`; agents start at `AGENTS.md`.
 
 ```bash
 pnpm install
-cp .env.example .env.local   # fill in Resend + site URL
+cp .env.example .env.local   # site URL
 pnpm dev                     # http://localhost:3000
 pnpm test                    # rules engine + content schema tests
 pnpm build                   # strict TS + lint enforced
@@ -19,9 +19,8 @@ pnpm build                   # strict TS + lint enforced
 ## Deploy (Vercel)
 
 1. Push this repo to GitHub and import it in Vercel (framework auto-detects Next.js).
-2. Set env vars for Production and Preview: `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`.
+2. Set `NEXT_PUBLIC_SITE_URL` for Production and Preview.
 3. Add the custom domain in Vercel and point DNS at it.
-4. In Resend, add the same domain, publish the SPF/DKIM/DMARC records, then switch `CONTACT_FROM_EMAIL` to `hello@<domain>`.
 5. Fill in the legal block in `content/site.ts` (registered address, GSTIN/Udyam). `pnpm test` validates the content shape.
 
 ## Before launch checklist
@@ -29,5 +28,4 @@ pnpm build                   # strict TS + lint enforced
 - [ ] `content/site.ts`: legal name, registered address, GSTIN / Udyam, contact email
 - [ ] `public/headshot.jpg`: real headshot (square-croppable, ≥ 1200 px)
 - [ ] Copy sign-off on hero, playground caption and case-study numbers in `content/`
-- [ ] Resend account + verified sending domain
 - [ ] `NEXT_PUBLIC_SITE_URL` set to the production origin (canonical URLs, OG image, sitemap)

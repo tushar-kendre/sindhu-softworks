@@ -9,7 +9,7 @@ export const privacy: LegalDoc = {
     {
       heading: "What we collect",
       paragraphs: [
-        "If you use the contact form, we receive the details you type: your name, email address, company (if given), the kind of engagement you are interested in, an optional budget range, and your message.",
+        "The contact form does not send anything from this site. It opens your own email application with a prefilled message, and you decide whether to send it. What we then receive is an ordinary email from you.",
         "Our hosting provider records standard server logs (IP address, browser type, pages requested, timestamps) to operate and secure the site. We do not run advertising trackers.",
       ],
     },
@@ -22,7 +22,7 @@ export const privacy: LegalDoc = {
     {
       heading: "Who processes it",
       paragraphs: [
-        "The site is hosted on Vercel. Contact form submissions are delivered by Resend to our business inbox. Both act as processors on our behalf under their own security commitments.",
+        "The site is hosted on Vercel, which acts as a processor on our behalf under its own security commitments. Email you send us is handled by Google Workspace.",
       ],
     },
     {

@@ -1,95 +1,68 @@
 "use client"
 
-import { Button, Column, Grid, Icon, Input, Row, Text, Textarea, useToast } from "@once-ui-system/core"
+import { Button, Column, Grid, Input, Row, Text, Textarea, useToast } from "@once-ui-system/core"
+import { useState } from "react"
 import { NativeSelect } from "@/components/signature/native-select"
-import { useEffect, useRef, useState } from "react"
 import { contact } from "@/content/contact"
 import { site } from "@/content/site"
-import { contactSchema, type ContactInput } from "@/lib/contact-schema"
 
-type Fields = Omit<ContactInput, "startedAt" | "website">
-type Errors = Partial<Record<keyof Fields, string>>
+type Fields = { name: string; company: string; engagement: string; message: string }
 
-const empty: Fields = { name: "", email: "", company: "", engagement: "product-engineering", budget: "", message: "" }
-
+/**
+ * No back end: the form composes an email and opens the visitor's own mail app, so the
+ * message arrives from their address with a structured subject and body. The plain
+ * address and a copy button cover visitors without a configured mail client.
+ */
 export function ContactForm() {
-  // Recorded after mount so the server render stays pure; used by the API to reject bot-fast submissions.
-  const startedAt = useRef(0)
-  useEffect(() => {
-    startedAt.current = Date.now()
-  }, [])
   const { addToast } = useToast()
-  const [fields, setFields] = useState<Fields>(empty)
-  const [engagementTouched, setEngagementTouched] = useState(false)
-  const [website, setWebsite] = useState("")
-  const [errors, setErrors] = useState<Errors>({})
-  const [state, setState] = useState<"idle" | "sending" | "sent" | "failed">("idle")
-
+  const [fields, setFields] = useState<Fields>({ name: "", company: "", engagement: "", message: "" })
+  const [opened, setOpened] = useState(false)
   const set = (k: keyof Fields) => (v: string) => setFields((f) => ({ ...f, [k]: v }))
-  const mailto = `mailto:${site.email}?subject=${encodeURIComponent("Project enquiry")}&body=${encodeURIComponent(fields.message)}`
 
-  async function submit(e: React.FormEvent) {
+  const engagementLabel = contact.engagementTypes.find((t) => t.value === fields.engagement)?.label
+  const subject = `[Enquiry] ${engagementLabel ?? "Project"}${fields.name ? ` — ${fields.name}` : ""}`
+  const body = [
+    fields.name ? `Name: ${fields.name}` : null,
+    fields.company ? `Company: ${fields.company}` : null,
+    engagementLabel ? `Engagement: ${engagementLabel}` : null,
+    "",
+    fields.message || "What is being built, where it stands today, and what a finished result looks like:",
+    "",
+  ]
+    .filter((l) => l !== null)
+    .join("\n")
+  const mailto = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+
+  function submit(e: React.FormEvent) {
     e.preventDefault()
-    const parsed = contactSchema.safeParse({ ...fields, website, startedAt: startedAt.current || Date.now() })
-    if (!parsed.success) {
-      const next: Errors = {}
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0] as keyof Fields
-        if (key && !next[key]) next[key] = issue.message
-      }
-      setErrors(next)
-      return
-    }
-    setErrors({})
-    setState("sending")
-    try {
-      const res = await fetch("/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(parsed.data) })
-      if (!res.ok) throw new Error(String(res.status))
-      setState("sent")
-      addToast({ variant: "success", message: `${contact.successTitle} ${contact.successBody}` })
-    } catch {
-      setState("failed")
-      addToast({ variant: "danger", message: contact.errorBody })
-    }
+    setOpened(true)
+    window.location.href = mailto
   }
 
-  if (state === "sent") {
-    return (
-      <Column role="status" center gap="12" minHeight={18}>
-        <Icon name="checkCircle" size="l" onBackground="success-medium" />
-        <Text as="p" variant="heading-default-l" style={{ fontFamily: "var(--font-heading)", fontSize: "1.5rem" }}>
-          {contact.successTitle}
-        </Text>
-        <Text as="p" variant="body-default-m" onBackground="neutral-weak" align="center">
-          {contact.successBody}
-        </Text>
-      </Column>
-    )
+  async function copyAddress() {
+    try {
+      await navigator.clipboard.writeText(site.email)
+      addToast({ variant: "success", message: `${site.email} copied` })
+    } catch {
+      addToast({ variant: "danger", message: `Could not copy. The address is ${site.email}` })
+    }
   }
 
   return (
-    <form onSubmit={submit} noValidate>
+    <form onSubmit={submit}>
       <Column gap="16">
         <Grid columns="2" gap="16" s={{ columns: 1 }}>
-          <Input id="name" label="Name" autoComplete="name" value={fields.name} onChange={(e) => set("name")(e.target.value)} error={!!errors.name} errorMessage={errors.name} />
-          <Input id="email" label="Email" type="email" inputMode="email" autoComplete="email" value={fields.email} onChange={(e) => set("email")(e.target.value)} error={!!errors.email} errorMessage={errors.email} />
+          <Input id="name" label="Name" autoComplete="name" value={fields.name} onChange={(e) => set("name")(e.target.value)} />
+          <Input id="company" label="Company (optional)" autoComplete="organization" value={fields.company} onChange={(e) => set("company")(e.target.value)} />
         </Grid>
-        <Input id="company" label="Company (optional)" autoComplete="organization" value={fields.company ?? ""} onChange={(e) => set("company")(e.target.value)} />
-        <Grid columns="2" gap="16" s={{ columns: 1 }}>
-          <NativeSelect
-            id="engagement"
-            label="Engagement type"
-            placeholder="Choose the closest fit"
-            options={contact.engagementTypes.map((t) => ({ label: t.label, value: t.value }))}
-            value={engagementTouched ? fields.engagement : ""}
-            onChange={(v) => {
-              setEngagementTouched(true)
-              set("engagement")(v)
-            }}
-            error={errors.engagement}
-          />
-          <NativeSelect id="budget" label="Budget (optional)" placeholder="Not sure yet" options={contact.budgets} value={fields.budget ?? ""} onChange={(v) => set("budget")(v)} />
-        </Grid>
+        <NativeSelect
+          id="engagement"
+          label="Engagement type"
+          placeholder="Choose the closest fit"
+          options={contact.engagementTypes.map((t) => ({ label: t.label, value: t.value }))}
+          value={fields.engagement}
+          onChange={set("engagement")}
+        />
         <Textarea
           id="message"
           label="Message"
@@ -97,25 +70,14 @@ export function ContactForm() {
           placeholder="What is being built, where it stands today, and what a finished result looks like."
           value={fields.message}
           onChange={(e) => set("message")(e.target.value)}
-          error={!!errors.message}
-          errorMessage={errors.message}
         />
-        {/* Honeypot: hidden from people, filled by bots */}
-        <div style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }} aria-hidden="true">
-          <label htmlFor="website">Website</label>
-          <input id="website" type="text" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
-        </div>
         <Row gap="16" vertical="center" wrap paddingTop="8">
-          <Button type="submit" size="m" variant="primary" label="Send message" loading={state === "sending"} disabled={state === "sending"} suffixIcon="arrowRight" />
-          <Text as="p" variant="body-default-s" onBackground="neutral-weak">
-            Or email <a href={mailto}>{site.email}</a>
-          </Text>
+          <Button type="submit" size="m" variant="primary" label={contact.submitLabel} suffixIcon="arrowUpRight" />
+          <Button type="button" size="m" variant="tertiary" label="Copy address" prefixIcon="mail" onClick={copyAddress} />
         </Row>
-        {state === "failed" ? (
-          <Text as="p" role="alert" variant="body-default-s" onBackground="danger-medium">
-            {contact.errorBody} <a href={mailto}>{site.email}</a>
-          </Text>
-        ) : null}
+        <Text as="p" variant="body-default-xs" onBackground="neutral-weak">
+          {opened ? contact.openedNote : contact.note} <a href={`mailto:${site.email}`}>{site.email}</a>
+        </Text>
       </Column>
     </form>
   )
