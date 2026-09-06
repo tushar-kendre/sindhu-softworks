@@ -53,6 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             "viz-style": dataStyle.variant,
           }}
         />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
       </head>
       <Providers>
         <Column as="body" background="page" fillWidth margin="0" padding="0">
@@ -60,7 +61,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <AppToaster />
         </Column>
       </Providers>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
     </html>
   )
 }
