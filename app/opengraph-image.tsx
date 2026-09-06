@@ -35,7 +35,6 @@ export default async function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={markUrl} width={96} height={96} alt="" />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ fontFamily: "Instrument", fontSize: 56, lineHeight: 1 }}>Sindhu</div>
