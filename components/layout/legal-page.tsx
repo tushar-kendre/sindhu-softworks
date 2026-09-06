@@ -8,7 +8,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
     <>
       <Row as="header" fillWidth horizontal="center" borderBottom="neutral-alpha-medium">
-        <Row fillWidth maxWidth="l" paddingX="24" paddingY="12" horizontal="between" vertical="center">
+        <Row fillWidth maxWidth="xl" paddingX="32" s={{ paddingX: "20" }} paddingY="12" horizontal="between" vertical="center">
           <Link href="/" style={{ display: "inline-flex" }}>
             <LogoLockup scale={0.85} />
           </Link>
@@ -16,7 +16,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
         </Row>
       </Row>
       <Column as="main" id="main" fillWidth horizontal="center" paddingY="80">
-        <Column fillWidth maxWidth={44} paddingX="24" gap="32">
+        <Column fillWidth maxWidth={44} paddingX="32" s={{ paddingX: "20" }} gap="32">
           <Column gap="12">
             <Text variant="label-default-s" onBackground="brand-medium" className="eyebrow">
               Legal

@@ -16,7 +16,7 @@ export function Hero() {
         gradient={{ display: true, colorStart: "brand-alpha-weak", colorEnd: "static-transparent", x: 20, y: 0, width: 120, height: 60, opacity: 70 }}
         mask={{ x: 50, y: 0, radius: 90 }}
       />
-      <Column zIndex={1} fillWidth maxWidth="l" paddingX="24" gap="64">
+      <Column zIndex={1} fillWidth maxWidth="xl" paddingX="32" s={{ paddingX: "20" }} gap="64">
         <Grid columns="5" gap="48" s={{ columns: 1, gap: "32" }}>
           <Column gap="24" style={{ gridColumn: "span 3" }}>
             <Row gap="12" vertical="center">

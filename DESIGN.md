@@ -24,7 +24,7 @@ Reference feelings: a lab notebook, a spec sheet, a flight-deck readout. Not a S
 - Border style: `conservative` (set globally). Controls ~0.25rem, containers ~0.5rem. Never override radius per component.
 - Rules: thin, high contrast. `Line` between sections and rows. Use `border="neutral-alpha-medium"` for panels that need an edge.
 - Density: comfortable, not airy. Section gap `104`, inner gaps `16`–`32`.
-- Content width follows content: prose `maxWidth={40}` (rem), page columns `maxWidth="l"`, the playground full width of the page column.
+- Content width follows content: prose `maxWidth={40}` (rem), page columns `maxWidth="xl"` (1440px) with `paddingX="32"` (`20` on s), the playground full width of the page column.
 
 ## Typography
 
@@ -49,7 +49,7 @@ Section numbering: every major section carries a mono index (`01`, `02` …) in 
 
 ## Layout patterns
 
-- Page skeleton: `Column as="main" fillWidth horizontal="center"` → `Column maxWidth="l" paddingX="24"` → sections separated by `Line`.
+- Page skeleton: `Column as="main" fillWidth horizontal="center"` → `Column maxWidth="xl" paddingX="32"` → sections separated by `Line`.
 - Spec sheet: two-column rows `Row` with a mono key on the left (`label-default-s`, `onBackground="neutral-weak"`) and the value on the right. Used for proof stats, engagement details, the legal block.
 - Asymmetry: prefer `Grid columns="5"`-style splits (2/3, 3/5) over equal halves.
 

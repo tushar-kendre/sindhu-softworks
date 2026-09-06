@@ -23,7 +23,7 @@ export function SiteFooter() {
   const { address, registrations } = site
   return (
     <Column as="footer" fillWidth horizontal="center" borderTop="neutral-alpha-medium" paddingTop="64" paddingBottom="32">
-      <Column fillWidth maxWidth="l" paddingX="24" gap="48">
+      <Column fillWidth maxWidth="xl" paddingX="32" s={{ paddingX: "20" }} gap="48">
         <Grid columns="3" gap="48" s={{ columns: 1 }}>
           <Column gap="16">
             <LogoLockup scale={0.9} />

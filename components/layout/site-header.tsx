@@ -38,7 +38,7 @@ export function SiteHeader() {
         <Button size="s" variant="primary" label="Skip to content" />
       </a>
       <Row fillWidth horizontal="center">
-        <Row fillWidth maxWidth="l" paddingX="24" paddingY="12" vertical="center" horizontal="between" gap="16">
+        <Row fillWidth maxWidth="xl" paddingX="24" paddingY="12" vertical="center" horizontal="between" gap="16">
           <Link href="/" style={{ display: "inline-flex", textDecoration: "none" }}>
             <LogoLockup scale={0.85} />
           </Link>

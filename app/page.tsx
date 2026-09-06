@@ -14,7 +14,7 @@ export default function HomePage() {
       <SiteHeader />
       <Column as="main" id="main" fillWidth horizontal="center">
         <Hero />
-        <Column fillWidth maxWidth="l" paddingX="24">
+        <Column fillWidth maxWidth="xl" paddingX="32" s={{ paddingX: "20" }}>
           <Proof />
           <Services />
           <Work />
