@@ -21,7 +21,7 @@ import { Presets } from "./presets"
 
 // Custom type names avoid React Flow's built-in "input"/"output"/"default" node styles.
 const nodeTypes = { playInput: InputNode, playRule: RuleNode, playOutput: OutputNode }
-const GRAPH_HEIGHT = { desktop: 470, mobile: 700 } as const
+import { GRAPH_HEIGHT } from "./constants"
 
 export function RulesPlayground({ onReady }: { onReady?: () => void }) {
   const [scenarioId, setScenarioId] = useState(playground.scenarios[0].id)

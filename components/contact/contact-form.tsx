@@ -1,6 +1,7 @@
 "use client"
 
-import { Button, Column, Grid, Icon, Input, Row, Select, Text, Textarea, useToast } from "@once-ui-system/core"
+import { Button, Column, Grid, Icon, Input, Row, Text, Textarea, useToast } from "@once-ui-system/core"
+import { NativeSelect } from "@/components/signature/native-select"
 import { useEffect, useRef, useState } from "react"
 import { contact } from "@/content/contact"
 import { site } from "@/content/site"
@@ -75,19 +76,19 @@ export function ContactForm() {
         </Grid>
         <Input id="company" label="Company (optional)" autoComplete="organization" value={fields.company ?? ""} onChange={(e) => set("company")(e.target.value)} />
         <Grid columns="2" gap="16" s={{ columns: 1 }}>
-          <Select
+          <NativeSelect
             id="engagement"
             label="Engagement type"
+            placeholder="Choose the closest fit"
             options={contact.engagementTypes.map((t) => ({ label: t.label, value: t.value }))}
             value={engagementTouched ? fields.engagement : ""}
-            onSelect={(v) => {
+            onChange={(v) => {
               setEngagementTouched(true)
-              set("engagement")(String(v))
+              set("engagement")(v)
             }}
-            error={!!errors.engagement}
-            errorMessage={errors.engagement}
+            error={errors.engagement}
           />
-          <Select id="budget" label="Budget (optional)" options={contact.budgets.map((b) => ({ label: b.label, value: b.value }))} value={fields.budget ?? ""} onSelect={(v) => set("budget")(String(v))} />
+          <NativeSelect id="budget" label="Budget (optional)" placeholder="Not sure yet" options={contact.budgets} value={fields.budget ?? ""} onChange={(v) => set("budget")(v)} />
         </Grid>
         <Textarea
           id="message"

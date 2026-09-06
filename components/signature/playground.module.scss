@@ -171,6 +171,10 @@
 .handle.fail { background: var(--danger-solid-strong) !important; }
 .handle.review { background: var(--warning-solid-strong) !important; }
 
+/* Static stand-in mirrors the live panel's heights per breakpoint */
+.staticGraph { height: 470px; width: 100%; margin-top: 0.75rem; padding: 0.5rem; }
+@media (max-width: 767px) { .staticGraph { height: 700px; } }
+
 /* React Flow surface */
 .flow {
   --xy-background-color: transparent;
@@ -195,7 +199,7 @@
   list-style: none;
 }
 .trace li:last-child { color: var(--neutral-on-background-strong); }
-.trace .n { opacity: 0.5; margin-right: 0.5rem; }
+.trace .n { color: var(--neutral-on-background-weak); margin-right: 0.5rem; }
 .expr {
   display: block;
   font-family: var(--font-code);

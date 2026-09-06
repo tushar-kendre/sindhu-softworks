@@ -36,7 +36,7 @@ export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
 
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      {!ready ? <div style={{ height: 470, width: "100%", padding: "0.5rem" }}>{fallback}</div> : null}
+      {!ready ? fallback : null}
       {near ? (
         <div style={ready ? undefined : { position: "absolute", inset: 0, opacity: 0 }} aria-hidden={!ready}>
           <RulesPlayground onReady={() => setReady(true)} />

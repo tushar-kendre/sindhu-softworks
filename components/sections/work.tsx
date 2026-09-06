@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, Column, Dialog, Grid, Line, Row, StatusIndicator, Tag, Text, ToggleButton } from "@once-ui-system/core"
+import { Button, Column, Dialog, Grid, Line, Row, Tag, Text, ToggleButton } from "@once-ui-system/core"
 import { useState } from "react"
 import { Section } from "@/components/layout/section"
 import type { CaseStudy, ServiceId } from "@/content/schema"
@@ -8,7 +8,7 @@ import { services } from "@/content/services"
 import { clientLabel, work } from "@/content/work"
 
 const statusLabel: Record<CaseStudy["status"], string> = { live: "In production", active: "Active build", design: "In design", concept: "Concept" }
-const statusColor: Record<CaseStudy["status"], "green" | "cyan" | "yellow" | "gray"> = { live: "green", active: "cyan", design: "yellow", concept: "gray" }
+const statusToken: Record<CaseStudy["status"], string> = { live: "var(--success-solid-strong)", active: "var(--brand-solid-strong)", design: "var(--warning-solid-strong)", concept: "var(--neutral-solid-weak)" }
 
 function Key({ children }: { children: React.ReactNode }) {
   return (
@@ -34,7 +34,7 @@ function CaseRow({ item, index }: { item: CaseStudy; index: string }) {
             {item.period}
           </Text>
           <Row gap="8" vertical="center" paddingTop="4">
-            <StatusIndicator size="s" color={statusColor[item.status]} ariaLabel={statusLabel[item.status]} />
+            <span aria-hidden style={{ width: 8, height: 8, borderRadius: 999, background: statusToken[item.status], flexShrink: 0 }} />
             <Text as="span" variant="label-default-s" onBackground="neutral-weak">
               {statusLabel[item.status]}
             </Text>
@@ -63,12 +63,12 @@ function CaseRow({ item, index }: { item: CaseStudy; index: string }) {
 
         <Column as="dl" gap="0" style={{ gridColumn: "span 1", margin: 0 }}>
           {item.outcomes.slice(0, 3).map((o) => (
-            <Column key={o.label} gap="2" paddingY="8" borderBottom="neutral-alpha-weak">
-              <Text as="dd" variant="heading-default-l" className="tabular" style={{ fontFamily: "var(--font-code)", margin: 0 }}>
-                {o.value}
-              </Text>
+            <Column key={o.label} gap="2" paddingY="8" borderBottom="neutral-alpha-weak" style={{ flexDirection: "column-reverse" }}>
               <Text as="dt" variant="code-default-xs" onBackground="neutral-weak">
                 {o.label}
+              </Text>
+              <Text as="dd" variant="heading-default-l" className="tabular" style={{ fontFamily: "var(--font-code)", margin: 0 }}>
+                {o.value}
               </Text>
             </Column>
           ))}
@@ -98,12 +98,12 @@ function CaseRow({ item, index }: { item: CaseStudy; index: string }) {
               <Key>Outcomes</Key>
               <Column as="dl" gap="0" style={{ margin: 0 }}>
                 {item.outcomes.map((o) => (
-                  <Row key={o.label} gap="16" paddingY="8" borderBottom="neutral-alpha-weak">
-                    <Text as="dd" variant="code-default-m" className="tabular" style={{ margin: 0, minWidth: "8rem" }}>
-                      {o.value}
-                    </Text>
+                  <Row key={o.label} gap="16" paddingY="8" borderBottom="neutral-alpha-weak" style={{ flexDirection: "row-reverse", justifyContent: "flex-end" }}>
                     <Text as="dt" variant="body-default-s" onBackground="neutral-weak">
                       {o.label}
+                    </Text>
+                    <Text as="dd" variant="code-default-m" className="tabular" style={{ margin: 0, minWidth: "8rem" }}>
+                      {o.value}
                     </Text>
                   </Row>
                 ))}

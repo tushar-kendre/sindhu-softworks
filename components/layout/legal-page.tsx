@@ -9,7 +9,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
     <>
       <Row as="header" fillWidth horizontal="center" borderBottom="neutral-alpha-medium">
         <Row fillWidth maxWidth="l" paddingX="24" paddingY="12" horizontal="between" vertical="center">
-          <Link href="/" style={{ display: "inline-flex" }} aria-label="Sindhu Softworks, home">
+          <Link href="/" style={{ display: "inline-flex" }}>
             <LogoLockup scale={0.85} />
           </Link>
           <Button href="/" variant="tertiary" size="s" label="Back to site" prefixIcon="arrowRight" />

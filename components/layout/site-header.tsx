@@ -39,7 +39,7 @@ export function SiteHeader() {
       </a>
       <Row fillWidth horizontal="center">
         <Row fillWidth maxWidth="l" paddingX="24" paddingY="12" vertical="center" horizontal="between" gap="16">
-          <Link href="/" style={{ display: "inline-flex", textDecoration: "none" }} aria-label="Sindhu Softworks, home">
+          <Link href="/" style={{ display: "inline-flex", textDecoration: "none" }}>
             <LogoLockup scale={0.85} />
           </Link>
 

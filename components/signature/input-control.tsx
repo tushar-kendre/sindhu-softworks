@@ -25,14 +25,21 @@ export function InputControl({ def, value, onChange, compact = false, id }: Prop
   }
 
   if (c.type === "toggle") {
-    return <Switch isChecked={Boolean(value)} onToggle={() => onChange(!value)} ariaLabel={def.label} label={compact ? undefined : formatValue(value, def)} reverse={false} />
+    return (
+      <label style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }} onClick={(e) => e.preventDefault()}>
+        <Switch isChecked={Boolean(value)} onToggle={() => onChange(!value)} ariaLabel={def.label} reverse={false} />
+        <span style={{ fontFamily: "var(--font-code)", fontSize: compact ? "0.6875rem" : "0.8125rem", color: "var(--neutral-on-background-weak)" }}>{formatValue(value, def)}</span>
+        <span style={{ position: "absolute", left: -9999 }}>{def.label}</span>
+      </label>
+    )
   }
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", width: "100%" }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <Slider min={c.min} max={c.max} step={c.step} value={Number(value)} onChange={(v) => onChange(v)} label={def.label} />
-      </div>
+      <label style={{ flex: 1, minWidth: 0, display: "block" }}>
+        <span style={{ position: "absolute", left: -9999 }}>{def.label}</span>
+        <Slider min={c.min} max={c.max} step={c.step} value={Number(value)} onChange={(v) => onChange(v)} aria-label={def.label} />
+      </label>
       <output
         aria-live="off"
         style={{ fontFamily: "var(--font-code)", fontSize: compact ? "0.6875rem" : "0.8125rem", fontVariantNumeric: "tabular-nums", minWidth: compact ? "3.5rem" : "4.5rem", textAlign: "right" }}

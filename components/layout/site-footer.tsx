@@ -32,10 +32,11 @@ export function SiteFooter() {
             </Text>
           </Column>
 
-          <Column as="dl" gap="0" style={{ margin: 0 }}>
+          <Column gap="0">
             <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow" paddingBottom="8">
               Registered business
             </Text>
+            <Column as="dl" gap="0" style={{ margin: 0 }}>
             <Spec k="Trade name">{site.legalName}</Spec>
             <Spec k="Constitution">Sole proprietorship, {address.country}</Spec>
             <Spec k="Proprietor">{site.proprietor}</Spec>
@@ -50,24 +51,25 @@ export function SiteFooter() {
             </Spec>
             {registrations.gstin ? <Spec k="GSTIN">{registrations.gstin}</Spec> : null}
             {registrations.udyam ? <Spec k="Udyam">{registrations.udyam}</Spec> : null}
+            </Column>
           </Column>
 
           <Column gap="0">
             <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow" paddingBottom="8">
               Contact
             </Text>
-            <Column as="ul" gap="0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+            <Column as="ul" gap="4" style={{ listStyle: "none", margin: 0, padding: 0 }}>
               <li>
-                <SmartLink href={`mailto:${site.email}`}>{site.email}</SmartLink>
+                <SmartLink style={{ minHeight: 28, display: "inline-flex", alignItems: "center" }} href={`mailto:${site.email}`}>{site.email}</SmartLink>
               </li>
               <li>
-                <SmartLink href={site.links.linkedin}>LinkedIn</SmartLink>
+                <SmartLink style={{ minHeight: 28, display: "inline-flex", alignItems: "center" }} href={site.links.linkedin}>LinkedIn</SmartLink>
               </li>
               <li>
-                <SmartLink href={site.links.github}>GitHub</SmartLink>
+                <SmartLink style={{ minHeight: 28, display: "inline-flex", alignItems: "center" }} href={site.links.github}>GitHub</SmartLink>
               </li>
               <li>
-                <SmartLink href={site.links.personal}>tushar-kendre.com</SmartLink>
+                <SmartLink style={{ minHeight: 28, display: "inline-flex", alignItems: "center" }} href={site.links.personal}>tushar-kendre.com</SmartLink>
               </li>
             </Column>
             <Row gap="16" paddingTop="24">
