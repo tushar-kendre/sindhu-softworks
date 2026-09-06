@@ -1,10 +1,11 @@
 import type { CaseStudy } from "./schema"
 
 export const work = {
-  eyebrow: "Work",
-  title: "Selected engagements",
-  intro: "Production systems, active builds and designs in progress. Client names appear where we have permission.",
-  openSourceTitle: "Open source and experiments",
+  index: "03",
+  eyebrow: "Selected work",
+  title: "Engagements and independent builds",
+  intro: "Production systems, active builds and designs in progress. Client names appear where permission has been given; otherwise the sector is stated.",
+  openSourceTitle: "Open source",
   items: [
     {
       slug: "vactrack",
@@ -14,9 +15,9 @@ export const work = {
       role: "Senior engineer and architect; contracted via Sindhu Softworks since 2026",
       period: "2025 – present",
       summary:
-        "Rebuilt a HIPAA-oriented vaccination-compliance platform from V1 to V2 without downtime, then scaled it from one university to four on a single multi-tenant deployment.",
+        "Re-architected a HIPAA-oriented vaccination-compliance platform from V1 to V2 with no downtime, then extended it from one university to four on a single multi-tenant deployment.",
       problem:
-        "The V1 system encoded each university's immunization policy in application code. Every new client meant a new fork of the rules, and nobody could explain to a registrar why a student had been flagged.",
+        "The V1 system encoded each university's immunization policy in application code. Each new client required a fork of the rules, and no one could explain to a registrar why a particular student had been flagged.",
       approach: [
         "Designed a DAG-based compliance engine with a 29-node DSL. Universities author, validate, simulate and publish policies themselves, with draft → publish → rollback governance.",
         "Ran V1 and V2 in parallel with dual-run parity validation and feature-flagged rollout, then cut over with zero downtime.",
@@ -42,9 +43,9 @@ export const work = {
       role: "Annotation strategy, program management and tooling",
       period: "2026 – present",
       summary:
-        "Strategy, quality management and custom tooling for human-in-the-loop evaluation of coding agents: sub-agent trajectories, code-search relevance and side-by-side conversation judgments.",
+        "Program strategy, quality management and purpose-built tooling for human-in-the-loop evaluation of coding agents: sub-agent trajectories, code-search relevance and side-by-side conversation judgements.",
       problem:
-        "Benchmarks were run with one-off scripts per task type. Results were hard to reproduce, annotator quality was hard to see, and every export from the annotation platform was a manual chore.",
+        "Benchmarks ran on one-off scripts per task type. Results were difficult to reproduce, annotator quality was difficult to see, and each export from the annotation platform was manual work.",
       approach: [
         "Wrote the tasker playbooks and reviewer instructions that define what a good annotation looks like, then ran verification passes on delivered batches.",
         "Built benchkit, a config-driven LLM evaluation engine: one generic pipeline, one short YAML per benchmark, resumable cached runs, a dashboard with live-streaming logs.",
@@ -68,9 +69,9 @@ export const work = {
       role: "Founding engineer",
       period: "2026 – present",
       summary:
-        "Book courts and turfs solo or with a crew, split the cost, show up. A mobile-first MVP on a shared TypeScript monorepo.",
+        "Court and turf booking for individuals and groups, with cost splitting. A mobile-first first release on a shared TypeScript monorepo.",
       problem:
-        "Group sports bookings in the city happen over chat threads and UPI screenshots. Venues have no live availability and organisers eat the no-shows.",
+        "Group bookings in the city are arranged over chat threads and payment screenshots. Venues publish no live availability, and organisers absorb the cost of no-shows.",
       approach: [
         "Expo + Expo Router app with NativeWind, TanStack Query and Zustand.",
         "Fastify 5 API with Drizzle on Postgres 16; Keycloak 26 with PKCE for auth.",
@@ -92,9 +93,9 @@ export const work = {
       role: "Author",
       period: "2026 – design",
       summary:
-        "Machines as the primitive. Guards double as authorization, transitions are statically verifiable, and guard checks push down into the storage layer.",
+        "State machines as the primitive. Guards double as authorisation, transitions are statically verifiable, and guard checks are pushed down into the storage layer.",
       problem:
-        "Most backends scatter lifecycle logic across handlers, cron jobs and database triggers. The state of a record is whatever the last writer left behind.",
+        "Most back ends scatter lifecycle logic across handlers, scheduled jobs and database triggers. The state of a record is whatever the last writer left behind.",
       approach: [
         "Design document v1.1 and eight ADRs covering the machine model, guard language (CEL), verification and storage connectors.",
         "Postgres and SQLite connectors specified with guard push-down so authorization happens where the data is.",
@@ -133,7 +134,7 @@ export const work = {
       role: "Author",
       period: "2025 – 2026",
       summary: "An interactive 3D Rubik's Cube in the browser. React Three Fiber, keyboard and pointer controls, tested with Vitest.",
-      problem: "A weekend excuse to learn quaternions properly.",
+      problem: "A small project to learn quaternion rotation properly.",
       approach: ["React Three Fiber scene with a pure cube-state model.", "Vitest coverage for the move engine."],
       outcomes: [{ label: "Live", value: "GitHub Pages" }],
       stack: ["React", "Three.js", "TypeScript", "Vite"],
@@ -141,7 +142,7 @@ export const work = {
       featured: false,
       openSource: true,
       links: [
-        { label: "Play it", href: "https://tushar-kendre.github.io/rcube-js/" },
+        { label: "Open", href: "https://tushar-kendre.github.io/rcube-js/" },
         { label: "Source", href: "https://github.com/tushar-kendre/rcube-js" },
       ],
     },
@@ -152,8 +153,8 @@ export const work = {
       client: { name: "Open source", public: true, sector: "Education", region: "GitHub" },
       role: "Co-author",
       period: "2025",
-      summary: "Upload a CSV, configure a small neural network, and watch forward and backward passes animate with a live loss curve.",
-      problem: "Backpropagation is easier to trust once you have watched it happen.",
+      summary: "Upload a CSV, configure a small neural network, and watch forward and backward passes animate against a live loss curve.",
+      problem: "Backpropagation is easier to reason about once it has been watched step by step.",
       approach: ["TensorFlow.js in the browser, PixiJS for the animated network, React Flow for the architecture editor, XState for the training loop."],
       outcomes: [{ label: "Status", value: "Working prototype" }],
       stack: ["Next.js", "TensorFlow.js", "PixiJS", "@xyflow/react", "XState"],

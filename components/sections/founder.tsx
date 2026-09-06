@@ -1,57 +1,62 @@
-import Image from "next/image"
-import { ArrowUpRight, FileText, Github, Globe, Linkedin } from "lucide-react"
+import { Button, Column, Grid, Media, Row, Text } from "@once-ui-system/core"
 import { Section } from "@/components/layout/section"
-import { Button } from "@/components/ui/button"
 import { founder } from "@/content/founder"
 
-const icons = { personal: Globe, linkedin: Linkedin, github: Github, paper: FileText }
+const icons = { personal: "globe", linkedin: "linkedin", github: "github", paper: "document" } as const
 
 export function FounderSection() {
   const p = founder.person
   return (
-    <Section id="founder" eyebrow={founder.eyebrow} title={founder.title} className="bg-muted/40">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,320px)_1fr] lg:gap-16">
-        <div>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-xl border bg-card">
-            <Image src={p.headshot} alt={p.headshotAlt} fill sizes="(min-width: 1024px) 320px, 100vw" className="object-cover" priority={false} />
-          </div>
-          <h3 className="mt-5 text-2xl">{p.name}</h3>
-          <p className="text-muted-foreground">{p.title}</p>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {p.links.map((l) => {
-              const Icon = icons[l.kind]
-              return (
-                <li key={l.href}>
-                  <Button asChild variant="outline" size="sm">
-                    <a href={l.href} target="_blank" rel="me noopener">
-                      <Icon className="mr-1.5 h-3.5 w-3.5" aria-hidden /> {l.label} <ArrowUpRight className="ml-1 h-3 w-3 opacity-60" aria-hidden />
-                    </a>
-                  </Button>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-        <div>
-          <div className="prose-tight max-w-2xl text-base leading-relaxed md:text-lg">
+    <Section id="founder" index={founder.index} eyebrow={founder.eyebrow} title={founder.title}>
+      <Grid columns="5" gap="48" s={{ columns: 1, gap: "32" }}>
+        <Column gap="16" style={{ gridColumn: "span 2" }}>
+          <Media src={p.headshot} alt={p.headshotAlt} aspectRatio="4 / 5" radius="s" border="neutral-alpha-medium" sizes="(min-width: 768px) 40vw, 100vw" />
+          <Column gap="4">
+            <Text as="p" variant="heading-default-l" style={{ fontFamily: "var(--font-heading)", fontSize: "1.5rem" }}>
+              {p.name}
+            </Text>
+            <Text as="p" variant="body-default-s" onBackground="neutral-weak">
+              {p.title}
+            </Text>
+          </Column>
+          <Row gap="8" wrap>
+            {p.links.map((l) => (
+              <Button key={l.href} href={l.href} size="s" variant="secondary" label={l.label} prefixIcon={icons[l.kind]} />
+            ))}
+          </Row>
+        </Column>
+        <Column gap="32" style={{ gridColumn: "span 3" }}>
+          <Column gap="16" style={{ maxWidth: "40rem" }}>
             {p.bio.map((para) => (
-              <p key={para.slice(0, 24)}>{para}</p>
+              <Text key={para.slice(0, 24)} as="p" variant="body-default-l">
+                {para}
+              </Text>
             ))}
-          </div>
-          <h4 className="mt-10 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Credentials</h4>
-          <ul className="mt-3 divide-y border-y">
+          </Column>
+          <Column gap="0">
+            <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow" paddingBottom="8">
+              Credentials
+            </Text>
             {p.credentials.map((c) => (
-              <li key={c.label} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3 text-sm">
-                <span className="font-medium">{c.label}</span>
-                <span className="text-muted-foreground">
-                  {c.org}
-                  {c.year ? <span className="ml-2 font-mono text-xs">{c.year}</span> : null}
-                </span>
-              </li>
+              <Row key={c.label} gap="16" paddingY="12" borderTop="neutral-alpha-weak" horizontal="between" vertical="start" s={{ direction: "column", gap: "2" }}>
+                <Text as="span" variant="body-default-s">
+                  {c.label}
+                </Text>
+                <Row gap="12" vertical="center">
+                  <Text as="span" variant="body-default-s" onBackground="neutral-weak">
+                    {c.org}
+                  </Text>
+                  {c.year ? (
+                    <Text as="span" variant="code-default-xs" onBackground="neutral-weak" className="tabular">
+                      {c.year}
+                    </Text>
+                  ) : null}
+                </Row>
+              </Row>
             ))}
-          </ul>
-        </div>
-      </div>
+          </Column>
+        </Column>
+      </Grid>
     </Section>
   )
 }

@@ -2,10 +2,8 @@
 
 import { Background, Position, ReactFlow, type Edge as FlowEdge, type ReactFlowInstance } from "@xyflow/react"
 import "@xyflow/react/dist/style.css"
-import { MousePointerClick, RotateCcw } from "lucide-react"
+import { Button, Column, Dialog, Icon, Row, Text, ToggleButton } from "@once-ui-system/core"
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { playground, type Preset, type Scenario } from "@/content/playground"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
@@ -13,6 +11,7 @@ import { defaultInputs, edgesOf, evaluate } from "@/lib/rules/engine"
 import { NODE_SIZE } from "@/lib/rules/layout"
 import type { InputValue, RuleNode as RuleNodeDef } from "@/lib/rules/types"
 import { cn } from "@/lib/utils"
+import s from "./playground.module.scss"
 import { ExplainPanel } from "./explain-panel"
 import { InputNode } from "./nodes/input-node"
 import { OutputNode } from "./nodes/output-node"
@@ -29,30 +28,20 @@ export function RulesPlayground({ onReady }: { onReady?: () => void }) {
   const scenario = playground.scenarios.find((s) => s.id === scenarioId) ?? playground.scenarios[0]
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col gap-3 px-4 pt-4 md:flex-row md:items-center md:justify-between md:px-6">
-        <h3 className="font-display text-lg md:text-xl">{scenario.title}</h3>
-        <div role="tablist" aria-label="Scenario" className="inline-flex self-start rounded-md border bg-background p-0.5">
-          {playground.scenarios.map((s) => (
-            <button
-              key={s.id}
-              role="tab"
-              type="button"
-              aria-selected={s.id === scenario.id}
-              onClick={() => setScenarioId(s.id)}
-              className={cn(
-                "rounded px-3 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm",
-                s.id === scenario.id ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {s.label}
-            </button>
+    <Column fillWidth>
+      <Row fillWidth horizontal="between" vertical="center" gap="12" paddingX="24" paddingTop="16" s={{ direction: "column", vertical: "start" }}>
+        <Text as="h3" variant="heading-default-l" style={{ fontFamily: "var(--font-heading)", fontSize: "1.25rem" }}>
+          {scenario.title}
+        </Text>
+        <Row role="tablist" aria-label="Scenario" gap="4" border="neutral-alpha-medium" radius="xs" padding="2">
+          {playground.scenarios.map((sc) => (
+            <ToggleButton key={sc.id} role="tab" aria-selected={sc.id === scenario.id} label={sc.label} selected={sc.id === scenario.id} size="s" variant="ghost" onClick={() => setScenarioId(sc.id)} />
           ))}
-        </div>
-      </div>
+        </Row>
+      </Row>
       {/* key resets inputs, preset and selection when the scenario changes */}
       <ScenarioPlayground key={scenario.id} scenario={scenario} onReady={onReady} />
-    </div>
+    </Column>
   )
 }
 
@@ -268,19 +257,20 @@ function ScenarioPlayground({ scenario, onReady }: { scenario: Scenario; onReady
 
   return (
     <>
-      <div className="mt-3 flex flex-wrap items-center gap-3 px-4 md:px-6">
+      <Row fillWidth gap="12" vertical="center" wrap paddingX="24" paddingTop="12">
         <Presets presets={scenario.presets} activeId={presetId} onSelect={applyPreset} />
         {editedCount > 0 ? (
-          <Button size="sm" variant="ghost" className="ml-auto h-7 text-xs" onClick={resetThresholds}>
-            <RotateCcw className="mr-1 h-3 w-3" aria-hidden /> Reset {editedCount === 1 ? "rule" : `${editedCount} rules`}
-          </Button>
+          <Button size="s" variant="tertiary" prefixIcon="reset" label={editedCount === 1 ? "Reset rule" : `Reset ${editedCount} rules`} onClick={resetThresholds} style={{ marginLeft: "auto" }} />
         ) : null}
-      </div>
-      <p className="mt-2 flex items-center gap-1.5 px-4 text-xs text-muted-foreground md:px-6">
-        <MousePointerClick className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden /> {playground.hint}
-      </p>
+      </Row>
+      <Row gap="8" vertical="center" paddingX="24" paddingTop="8">
+        <Icon name="cursorClick" size="xs" onBackground="brand-medium" />
+        <Text as="p" variant="body-default-xs" onBackground="neutral-weak">
+          {playground.hint}
+        </Text>
+      </Row>
 
-      <div ref={containerRef} className="mt-3 w-full" style={{ height: GRAPH_HEIGHT[kind] }}>
+      <div ref={containerRef} className={s.flow} style={{ height: GRAPH_HEIGHT[kind], width: "100%", marginTop: "0.75rem" }}>
         <ReactFlow<PlayNode, FlowEdge>
           key={kind}
           nodes={nodes}
@@ -314,38 +304,49 @@ function ScenarioPlayground({ scenario, onReady }: { scenario: Scenario; onReady
           }}
           aria-label="Rules graph"
         >
-          <Background gap={24} size={1} color="hsl(var(--border))" />
+          <Background gap={24} size={1} color="var(--neutral-border-weak)" />
         </ReactFlow>
       </div>
 
-      {/* Explain + trace. Desktop: side by side under the graph. Mobile: explain lives in a drawer. */}
-      <div className="grid gap-4 border-t px-4 py-4 md:grid-cols-[1.1fr_1fr] md:px-6">
+      {/* Explain + trace. Desktop: side by side under the graph. Mobile: explanation opens in a dialog. */}
+      <Column fillWidth borderTop="neutral-alpha-medium" paddingX="24" paddingY="16" gap="16">
         {isMobile ? (
-          <Drawer open={explainOpen} onOpenChange={setExplainOpen}>
-            <DrawerContent className="px-5 pb-8">
-              <DrawerHeader className="sr-only">
-                <DrawerTitle>Explanation</DrawerTitle>
-                <DrawerDescription>Why this node has its current value</DrawerDescription>
-              </DrawerHeader>
+          <>
+            <Text as="p" variant="body-default-xs" onBackground="neutral-weak">
+              Tap any rule or the decision to see why it has its value.
+            </Text>
+            <Dialog isOpen={explainOpen} onClose={() => setExplainOpen(false)} title="Explanation" description="Why this node has its current value">
               <ExplainPanel node={selectedNode} result={selectedResult} labelOf={labelOf} onPick={setSelectedId} />
-            </DrawerContent>
-          </Drawer>
+            </Dialog>
+          </>
         ) : (
-          <ExplainPanel node={selectedNode} result={selectedResult} labelOf={labelOf} onPick={setSelectedId} />
+          <Row fillWidth gap="32" vertical="start" s={{ direction: "column" }}>
+            <Column flex={11} minWidth={0}>
+              <ExplainPanel node={selectedNode} result={selectedResult} labelOf={labelOf} onPick={setSelectedId} />
+            </Column>
+            <Column flex={10} minWidth={0}>
+              <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow">
+                Evaluation trace
+              </Text>
+              <ol aria-live="polite" aria-atomic="true" className={s.trace}>
+                {result.trace.map((line, i) => (
+                  <li key={i}>
+                    <span className={s.n}>{String(i + 1).padStart(2, "0")}</span>
+                    {line}
+                  </li>
+                ))}
+              </ol>
+            </Column>
+          </Row>
         )}
-        {isMobile ? <p className="text-xs text-muted-foreground">Tap any rule or the decision to see why it has its value.</p> : null}
-        <div className={isMobile ? "sr-only" : "min-w-0"}>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Evaluation trace</p>
-          <ol aria-live="polite" aria-atomic="true" className="mt-2 max-h-48 space-y-1 overflow-y-auto font-mono text-[11px] leading-relaxed text-muted-foreground">
+        {isMobile ? (
+          <ol aria-live="polite" aria-atomic="true" style={{ position: "absolute", left: -9999 }}>
             {result.trace.map((line, i) => (
-              <li key={i} className={i === result.trace.length - 1 ? "text-foreground" : undefined}>
-                <span className="mr-2 opacity-50">{String(i + 1).padStart(2, "0")}</span>
-                {line}
-              </li>
+              <li key={i}>{line}</li>
             ))}
           </ol>
-        </div>
-      </div>
+        ) : null}
+      </Column>
     </>
   )
 }

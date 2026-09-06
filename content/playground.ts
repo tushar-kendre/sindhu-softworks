@@ -172,13 +172,13 @@ const pullRequest: Scenario = {
 }
 
 export const playground: PlaygroundContent = {
-  eyebrow: "Live rules engine",
-  title: "A decision engine you can poke at",
-  hint: "Flip the switches, drag the sliders, or edit a threshold on any rule. Every node explains itself.",
+  eyebrow: "Live instrument",
+  title: "A working rule engine",
+  hint: "Change any input, or edit a threshold on a rule. Each node reports its own reasoning.",
   caption:
-    "Decisions as declarative graphs: inputs feed rules, rules feed combinators, and the output explains itself node by node. Switch scenarios and notice that only the data changed. The engine is the same 150 lines.",
+    "Decisions expressed as declarative graphs: inputs feed rules, rules feed combinators, and the output explains itself node by node. Switching scenarios changes only the data. The evaluator is the same 150 lines in both cases.",
   footnote:
-    "The same shape runs in production compliance engines we have built, with 29-node policy DSLs, versioned rules and a draft → publish → rollback lifecycle. This one has thirteen nodes and no versioning.",
+    "The same structure runs in production compliance engines built by Sindhu Softworks, with 29-node policy languages, versioned rules and a draft, publish and rollback lifecycle. This instance has thirteen nodes and no versioning.",
   sourceLabel: "Read the evaluator",
   sourceHref: "https://github.com/tushar-kendre/sindhu-softworks/blob/main/lib/rules/engine.ts",
   scenarios: [orderFulfilment, pullRequest],

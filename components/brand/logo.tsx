@@ -1,26 +1,27 @@
-import { cn } from "@/lib/utils"
 import { CHANNEL, CONFLUENCE, MARK_VIEWBOX, SOURCES, STROKE, TRIBUTARIES } from "./logo-paths"
 
 type MarkProps = {
-  className?: string
-  /** "mono" uses currentColor for everything; "duo" colours tributaries with the primary token */
+  size?: number
+  /** "mono" uses currentColor for everything; "duo" colours tributaries with the brand token */
   tone?: "mono" | "duo"
-  /** Draw the inner port dot (skip at tiny sizes) */
   port?: boolean
   title?: string
+  style?: React.CSSProperties
 }
 
-export function LogoMark({ className, tone = "duo", port = true, title }: MarkProps) {
-  const primary = tone === "duo" ? "hsl(var(--primary))" : "currentColor"
+export function LogoMark({ size = 32, tone = "duo", port = true, title, style }: MarkProps) {
+  const primary = tone === "duo" ? "var(--brand-on-background-strong)" : "currentColor"
   return (
     <svg
       viewBox={MARK_VIEWBOX}
-      className={cn("h-8 w-8 shrink-0", className)}
+      width={size}
+      height={size}
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
+      style={{ flexShrink: 0, ...style }}
     >
       {title ? <title>{title}</title> : null}
       {TRIBUTARIES.map((d) => (
@@ -31,29 +32,36 @@ export function LogoMark({ className, tone = "duo", port = true, title }: MarkPr
         <circle key={s.cy} cx={s.cx} cy={s.cy} r={STROKE.source} fill={primary} />
       ))}
       <circle cx={CONFLUENCE.cx} cy={CONFLUENCE.cy} r={CONFLUENCE.r} fill="currentColor" />
-      {port ? <circle cx={CONFLUENCE.cx} cy={CONFLUENCE.cy} r={CONFLUENCE.port} fill="hsl(var(--background))" /> : null}
+      {port ? <circle cx={CONFLUENCE.cx} cy={CONFLUENCE.cy} r={CONFLUENCE.port} fill="var(--page-background)" /> : null}
     </svg>
   )
 }
 
-type LockupProps = { className?: string; markClassName?: string; tone?: "mono" | "duo"; stacked?: boolean }
-
-export function Wordmark({ className, stacked = false }: { className?: string; stacked?: boolean }) {
+export function Wordmark({ scale = 1 }: { scale?: number }) {
   return (
-    <span className={cn("flex leading-none", stacked ? "flex-col items-center gap-1" : "flex-col gap-0.5", className)}>
-      <span className="font-display text-[1.35em] font-semibold tracking-[-0.01em]" style={{ fontVariationSettings: '"opsz" 32' }}>
-        Sindhu
+    <span style={{ display: "flex", flexDirection: "column", lineHeight: 1, gap: `${0.15 * scale}rem` }}>
+      <span style={{ fontFamily: "var(--font-heading)", fontSize: `${1.45 * scale}rem`, letterSpacing: "-0.01em", color: "var(--neutral-on-background-strong)" }}>Sindhu</span>
+      <span
+        style={{
+          fontFamily: "var(--font-label)",
+          fontSize: `${0.62 * scale}rem`,
+          fontWeight: 500,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: "var(--neutral-on-background-weak)",
+        }}
+      >
+        Softworks
       </span>
-      <span className="font-sans text-[0.62em] font-medium uppercase tracking-[0.18em] text-muted-foreground">Softworks</span>
     </span>
   )
 }
 
-export function LogoLockup({ className, markClassName, tone = "duo", stacked = false }: LockupProps) {
+export function LogoLockup({ scale = 1, tone = "duo" }: { scale?: number; tone?: "mono" | "duo" }) {
   return (
-    <span className={cn("inline-flex items-center text-foreground", stacked ? "flex-col gap-3" : "gap-3", className)}>
-      <LogoMark className={cn("h-9 w-9", markClassName)} tone={tone} title="Sindhu Softworks" />
-      <Wordmark stacked={stacked} />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: `${0.7 * scale}rem`, color: "var(--neutral-on-background-strong)" }}>
+      <LogoMark size={36 * scale} tone={tone} title="Sindhu Softworks" />
+      <Wordmark scale={scale} />
     </span>
   )
 }

@@ -1,13 +1,15 @@
 import type { ProofStat } from "./schema"
 
 export const proof = {
+  index: "01",
   eyebrow: "Track record",
-  line: "Engagements with Patient First.AI, LinkedIn's AI evaluation programs, and Bengaluru startups.",
+  title: "Outcomes from recent engagements",
+  line: "Figures are from Patient First.AI (2025 to present) and Brainwave Science (2020 to 2023). Each is verifiable on request.",
   stats: [
-    { value: "50,000+", label: "student records under automated compliance rules", source: "Patient First.AI" },
-    { value: "1 → 4", label: "university clients on one multi-tenant platform", source: "Patient First.AI" },
-    { value: "0", label: "downtime during the V1 → V2 platform migration", source: "Patient First.AI" },
-    { value: "1 → 6", label: "engineers on a team built and led from scratch", source: "Patient First.AI" },
-    { value: "$500K+", label: "government contracts delivered end to end", source: "Brainwave Science" },
+    { value: "50,000+", label: "Student records governed by automated compliance rules", source: "Patient First.AI" },
+    { value: "1 → 4", label: "University clients served from one multi-tenant deployment", source: "Patient First.AI" },
+    { value: "0 min", label: "Downtime during the V1 to V2 platform migration", source: "Patient First.AI" },
+    { value: "1 → 6", label: "Engineers on a team formed and led from the first hire", source: "Patient First.AI" },
+    { value: "$500K+", label: "Government contracts delivered end to end", source: "Brainwave Science" },
   ] satisfies ProofStat[],
 }

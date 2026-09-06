@@ -1,45 +1,61 @@
-import { Button } from "@/components/ui/button"
-import { hero } from "@/content/hero"
-import { LogoMark } from "@/components/brand/logo"
+import { Background, Button, Column, Grid, Heading, Line, Row, Text } from "@once-ui-system/core"
 import { PlaygroundShell } from "@/components/signature/playground-shell"
+import { hero } from "@/content/hero"
 
 export function Hero() {
   return (
-    <section id="hero" className="relative overflow-hidden pb-16 pt-12 md:pb-24 md:pt-20" aria-labelledby="hero-title">
-      {/* soft river-teal wash behind the hero */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_80%_10%,hsl(var(--primary)/0.12),transparent_70%)]"
+    <Column as="section" id="hero" fillWidth horizontal="center" paddingTop="64" paddingBottom="40" aria-labelledby="hero-title" overflow="hidden">
+      {/* The page's single ambient layer: graph-paper grid with a faint brand wash, faded out at the bottom. */}
+      <Background
+        position="absolute"
+        top="0"
+        left="0"
+        fill
+        pointerEvents="none"
+        grid={{ display: true, color: "neutral-alpha-weak", width: "32", height: "32", opacity: 60 }}
+        gradient={{ display: true, colorStart: "brand-alpha-weak", colorEnd: "static-transparent", x: 20, y: 0, width: 120, height: 60, opacity: 70 }}
+        mask={{ x: 50, y: 0, radius: 90 }}
       />
-      <div className="container">
-        <div className="max-w-3xl animate-fade-up motion-reduce:animate-none">
-          <ul className="mb-6 flex flex-wrap gap-2" aria-label="At a glance">
-            {hero.badges.map((b) => (
-              <li key={b} className="rounded-full border bg-card px-3 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-                {b}
-              </li>
+      <Column zIndex={1} fillWidth maxWidth="l" paddingX="24" gap="64">
+        <Grid columns="5" gap="48" s={{ columns: 1, gap: "32" }}>
+          <Column gap="24" style={{ gridColumn: "span 3" }}>
+            <Row gap="12" vertical="center">
+              <Text as="span" variant="code-default-s" onBackground="brand-medium" className="tabular">
+                {hero.index}
+              </Text>
+              <Text as="span" variant="label-default-s" onBackground="neutral-weak" className="eyebrow">
+                Sindhu Softworks
+              </Text>
+            </Row>
+            <Heading as="h1" id="hero-title" variant="display-default-l" wrap="balance">
+              {hero.headline}
+            </Heading>
+            <Text as="p" variant="body-default-l" onBackground="neutral-weak" style={{ maxWidth: "36rem" }}>
+              {hero.sub}
+            </Text>
+            <Row gap="12" wrap paddingTop="8">
+              <Button href={hero.primaryCta.href} size="m" variant="primary" label={hero.primaryCta.label} suffixIcon="arrowRight" />
+              <Button href={hero.secondaryCta.href} size="m" variant="secondary" label={hero.secondaryCta.label} />
+            </Row>
+          </Column>
+
+          <Column as="dl" gap="0" style={{ gridColumn: "span 2", margin: 0, alignSelf: "end" }}>
+            <Line background="neutral-alpha-medium" />
+            {hero.facts.map((f) => (
+              <Row key={f.key} gap="16" paddingY="12" borderBottom="neutral-alpha-weak" vertical="start">
+                <Text as="dt" variant="code-default-s" onBackground="neutral-weak" style={{ minWidth: "7rem" }}>
+                  {f.key}
+                </Text>
+                <Text as="dd" variant="body-default-s" style={{ margin: 0 }}>
+                  {f.value}
+                </Text>
+              </Row>
             ))}
-          </ul>
-          <h1 id="hero-title" className="text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl">
-            {hero.headline}
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground md:text-xl">{hero.sub}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <a href={hero.primaryCta.href}>{hero.primaryCta.label}</a>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <a href={hero.secondaryCta.href}>{hero.secondaryCta.label}</a>
-            </Button>
-          </div>
-          <p className="mt-10 flex items-center gap-2 text-sm text-muted-foreground">
-            <LogoMark className="h-5 w-5" tone="mono" /> Sindhu, the river. Many streams, one channel.
-          </p>
-        </div>
-        <div className="mt-14 md:mt-20">
-          <PlaygroundShell />
-        </div>
-      </div>
-    </section>
+          </Column>
+        </Grid>
+
+        <PlaygroundShell />
+      </Column>
+    </Column>
   )
 }

@@ -2,6 +2,7 @@
 
 import { memo } from "react"
 import { InputControl } from "../input-control"
+import s from "../playground.module.scss"
 import { NodeFrame, type PlayNodeProps } from "./shared"
 
 export const InputNode = memo(function InputNode(props: PlayNodeProps) {
@@ -9,7 +10,7 @@ export const InputNode = memo(function InputNode(props: PlayNodeProps) {
   const { inputDef, value, onChange, def } = data
   return (
     <NodeFrame {...props}>
-      <p id={`${id}-label`} className="mb-1.5 text-xs font-medium text-muted-foreground">
+      <p id={`${id}-label`} className={s.label}>
         {def.label}
       </p>
       {inputDef && onChange !== undefined && value !== undefined ? (

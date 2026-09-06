@@ -10,12 +10,12 @@ export const site: Site = {
   name: "Sindhu Softworks",
   legalName: "Sindhu Softworks",
   proprietor: "Tushar Pradeep Kendre",
-  tagline: "Software where the logic is visible.",
+  tagline: "Software whose reasoning you can inspect.",
   description:
-    "Sindhu Softworks is an independent software engineering practice in India. We build rules engines, compliance platforms and AI evaluation tooling for teams that need to explain every decision their system makes.",
+    "Sindhu Softworks is an independent software engineering practice based in Latur, India. It designs and builds rule engines, compliance platforms and AI evaluation tooling for teams in the United States and India that must account for every decision their systems make.",
   url,
   email: "tushar@sindhusoftworks.com",
-  responseTime: "within two business days (IST)",
+  responseTime: "within two business days, Indian Standard Time",
   address: {
     lines: ["Bungalow A-28, Silver Spring Villa", "Venkateshwara G, Khopegaon"],
     city: "Latur",

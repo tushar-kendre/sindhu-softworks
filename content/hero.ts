@@ -1,7 +1,14 @@
 export const hero = {
-  headline: "Software where the logic is visible.",
-  sub: "Sindhu Softworks builds rules engines, compliance platforms and AI evaluation tooling for teams that need to explain every decision their system makes.",
+  index: "00",
+  headline: "Software whose reasoning you can inspect.",
+  sub: "Sindhu Softworks designs and builds rule engines, compliance platforms and evaluation tooling for teams that must account for every decision their systems make.",
   primaryCta: { label: "Start a conversation", href: "#contact" },
-  secondaryCta: { label: "See the work", href: "#work" },
-  badges: ["Registered in India", "US and India clients", "Founder-led engineering"],
+  secondaryCta: { label: "View selected work", href: "#work" },
+  /** Spec-sheet facts shown beside the headline */
+  facts: [
+    { key: "Established", value: "2026, Latur, India" },
+    { key: "Registration", value: "Sole proprietorship, GST" },
+    { key: "Clients", value: "United States and India" },
+    { key: "Model", value: "Founder-led engineering" },
+  ],
 }

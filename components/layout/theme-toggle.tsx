@@ -1,24 +1,20 @@
 "use client"
 
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import { IconButton, useTheme } from "@once-ui-system/core"
 import { useMounted } from "@/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useMounted()
   const isDark = mounted && resolvedTheme === "dark"
-
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className={className}
+    <IconButton
+      variant="tertiary"
+      size="m"
+      icon={isDark ? "sun" : "moon"}
+      tooltip={isDark ? "Light theme" : "Dark theme"}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-    >
-      {mounted ? isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" /> : <span className="block h-4 w-4" />}
-    </Button>
+    />
   )
 }

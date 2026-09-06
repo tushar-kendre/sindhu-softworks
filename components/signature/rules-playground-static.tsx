@@ -4,10 +4,10 @@ import { edgePath, graphBounds, NODE_SIZE } from "@/lib/rules/layout"
 import type { NodeState } from "@/lib/rules/types"
 
 const stroke: Record<NodeState, string> = {
-  pass: "hsl(var(--success))",
-  fail: "hsl(var(--destructive) / 0.55)",
-  review: "hsl(var(--warning))",
-  neutral: "hsl(var(--border))",
+  pass: "var(--success-solid-strong)",
+  fail: "var(--danger-alpha-strong)",
+  review: "var(--warning-solid-strong)",
+  neutral: "var(--neutral-border-medium)",
 }
 
 /**
@@ -27,7 +27,7 @@ export function RulesPlaygroundStatic() {
   return (
     <svg
       viewBox={`${-pad} ${-pad} ${width + pad * 2} ${height + pad * 2}`}
-      className="h-full w-full"
+      style={{ height: "100%", width: "100%" }}
       role="img"
       aria-labelledby="static-graph-title"
       preserveAspectRatio="xMidYMid meet"
@@ -52,15 +52,15 @@ export function RulesPlaygroundStatic() {
               width={w}
               height={h}
               rx={10}
-              fill="hsl(var(--card))"
-              stroke={isOutput ? stroke[r.state] : "hsl(var(--border))"}
+              fill="var(--surface-background)"
+              stroke={isOutput ? stroke[r.state] : "var(--neutral-border-medium)"}
               strokeWidth={isOutput ? 2 : 1}
             />
-            <circle cx={14} cy={h / 2} r={4} fill={stroke[r.state] === "hsl(var(--border))" ? "hsl(var(--muted-foreground))" : stroke[r.state]} />
-            <text x={26} y={26} fontSize={13} fontWeight={600} fill="hsl(var(--foreground))" fontFamily="var(--font-sans)">
+            <circle cx={14} cy={h / 2} r={4} fill={r.state === "neutral" ? "var(--neutral-solid-weak)" : stroke[r.state]} />
+            <text x={26} y={26} fontSize={13} fontWeight={600} fill="var(--neutral-on-background-strong)" fontFamily="var(--font-body)">
               {node.label}
             </text>
-            <text x={26} y={46} fontSize={11} fill="hsl(var(--muted-foreground))" fontFamily="var(--font-mono)">
+            <text x={26} y={46} fontSize={11} fill="var(--neutral-on-background-weak)" fontFamily="var(--font-code)">
               {isOutput ? String(r.value) : r.reason.length > 30 ? r.reason.slice(0, 29) + "…" : r.reason}
             </text>
           </g>

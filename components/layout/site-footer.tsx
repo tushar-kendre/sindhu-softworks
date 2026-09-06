@@ -1,96 +1,98 @@
+import { Column, Grid, Line, Row, SmartLink, Text } from "@once-ui-system/core"
 import Link from "next/link"
 import { LogoLockup } from "@/components/brand/logo"
 import { ThemeToggle } from "@/components/layout/theme-toggle"
 import { site } from "@/content/site"
 
+function Spec({ k, children }: { k: string; children: React.ReactNode }) {
+  return (
+    <Row gap="16" paddingY="8" borderBottom="neutral-alpha-weak" vertical="start">
+      <Text as="dt" variant="code-default-s" onBackground="neutral-weak" style={{ minWidth: "7.5rem" }}>
+        {k}
+      </Text>
+      <Text as="dd" variant="body-default-s" onBackground="neutral-strong" style={{ margin: 0 }}>
+        {children}
+      </Text>
+    </Row>
+  )
+}
+
+const year = new Date().getFullYear()
+
 export function SiteFooter() {
   const { address, registrations } = site
   return (
-    <footer className="border-t bg-muted/40">
-      <div className="container grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
-          <LogoLockup className="text-lg" markClassName="h-10 w-10" />
-          <p className="mt-4 max-w-md text-sm text-muted-foreground">{site.description}</p>
-        </div>
+    <Column as="footer" fillWidth horizontal="center" borderTop="neutral-alpha-medium" paddingTop="64" paddingBottom="32">
+      <Column fillWidth maxWidth="l" paddingX="24" gap="48">
+        <Grid columns="3" gap="48" s={{ columns: 1 }}>
+          <Column gap="16">
+            <LogoLockup scale={0.9} />
+            <Text as="p" variant="body-default-s" onBackground="neutral-weak" style={{ maxWidth: "28rem" }}>
+              {site.description}
+            </Text>
+          </Column>
 
-        <div className="text-sm">
-          <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Registered business</h2>
-          <address className="mt-3 not-italic leading-relaxed">
-            <span className="font-medium">{site.legalName}</span>
-            <br />
-            A sole proprietorship registered in {address.country} (GST regular registration).
-            <br />
-            Proprietor: {site.proprietor}
-            <br />
-            {address.lines.map((l) => (
-              <span key={l}>
-                {l}
-                <br />
-              </span>
-            ))}
-            {address.city}, {address.state} {address.pin}
-            <br />
-            {address.country}
-          </address>
-          {registrations.gstin || registrations.udyam ? (
-            <dl className="mt-3 space-y-1 font-mono text-xs text-muted-foreground">
-              {registrations.gstin ? (
-                <div className="flex gap-2">
-                  <dt>GSTIN</dt>
-                  <dd>{registrations.gstin}</dd>
-                </div>
-              ) : null}
-              {registrations.udyam ? (
-                <div className="flex gap-2">
-                  <dt>Udyam</dt>
-                  <dd>{registrations.udyam}</dd>
-                </div>
-              ) : null}
-            </dl>
-          ) : null}
-        </div>
+          <Column as="dl" gap="0" style={{ margin: 0 }}>
+            <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow" paddingBottom="8">
+              Registered business
+            </Text>
+            <Spec k="Trade name">{site.legalName}</Spec>
+            <Spec k="Constitution">Sole proprietorship, {address.country}</Spec>
+            <Spec k="Proprietor">{site.proprietor}</Spec>
+            <Spec k="Address">
+              {address.lines.map((l) => (
+                <span key={l}>
+                  {l}
+                  <br />
+                </span>
+              ))}
+              {address.city}, {address.state} {address.pin}
+            </Spec>
+            {registrations.gstin ? <Spec k="GSTIN">{registrations.gstin}</Spec> : null}
+            {registrations.udyam ? <Spec k="Udyam">{registrations.udyam}</Spec> : null}
+          </Column>
 
-        <div className="text-sm">
-          <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Reach us</h2>
-          <ul className="mt-3 space-y-2">
-            <li>
-              <a className="underline-offset-4 hover:underline" href={`mailto:${site.email}`}>
-                {site.email}
-              </a>
-            </li>
-            <li>
-              <a className="underline-offset-4 hover:underline" href={site.links.linkedin} rel="me noopener" target="_blank">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a className="underline-offset-4 hover:underline" href={site.links.github} rel="me noopener" target="_blank">
-                GitHub
-              </a>
-            </li>
-          </ul>
-          <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
-            <li>
-              <Link className="hover:text-foreground" href="/privacy">
-                Privacy
+          <Column gap="0">
+            <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow" paddingBottom="8">
+              Contact
+            </Text>
+            <Column as="ul" gap="0" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li>
+                <SmartLink href={`mailto:${site.email}`}>{site.email}</SmartLink>
+              </li>
+              <li>
+                <SmartLink href={site.links.linkedin}>LinkedIn</SmartLink>
+              </li>
+              <li>
+                <SmartLink href={site.links.github}>GitHub</SmartLink>
+              </li>
+              <li>
+                <SmartLink href={site.links.personal}>tushar-kendre.com</SmartLink>
+              </li>
+            </Column>
+            <Row gap="16" paddingTop="24">
+              <Link href="/privacy">
+                <Text variant="label-default-s" onBackground="neutral-weak">
+                  Privacy
+                </Text>
               </Link>
-            </li>
-            <li>
-              <Link className="hover:text-foreground" href="/terms">
-                Terms
+              <Link href="/terms">
+                <Text variant="label-default-s" onBackground="neutral-weak">
+                  Terms
+                </Text>
               </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t">
-        <div className="container flex items-center justify-between py-4 text-xs text-muted-foreground">
-          <p>
-            © {site.established === new Date().getFullYear() ? site.established : `${site.established}–${new Date().getFullYear()}`} {site.legalName}
-          </p>
-          <ThemeToggle className="h-8 w-8" />
-        </div>
-      </div>
-    </footer>
+            </Row>
+          </Column>
+        </Grid>
+
+        <Line background="neutral-alpha-weak" />
+        <Row horizontal="between" vertical="center" gap="16">
+          <Text as="p" variant="code-default-xs" onBackground="neutral-weak">
+            © {site.established === year ? site.established : `${site.established}–${year}`} {site.legalName}
+          </Text>
+          <ThemeToggle />
+        </Row>
+      </Column>
+    </Column>
   )
 }

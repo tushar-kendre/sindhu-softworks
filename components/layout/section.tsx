@@ -1,33 +1,48 @@
-import { cn } from "@/lib/utils"
+import { Column, Heading, Line, Row, Text } from "@once-ui-system/core"
 
 type Props = {
   id: string
+  index?: string
   eyebrow?: string
   title?: string
   intro?: string
-  className?: string
   children: React.ReactNode
-  /** Constrain heading width */
-  narrow?: boolean
+  /** Draw the top rule (all sections except the first) */
+  rule?: boolean
 }
 
-export function Section({ id, eyebrow, title, intro, className, children, narrow = true }: Props) {
+/** A numbered section: mono index + eyebrow, serif title, optional intro, then content. */
+export function Section({ id, index, eyebrow, title, intro, children, rule = true }: Props) {
   return (
-    <section id={id} className={cn("scroll-mt-20 py-20 md:py-28", className)} aria-labelledby={title ? `${id}-title` : undefined}>
-      <div className="container">
-        {(eyebrow || title || intro) && (
-          <header className={cn("mb-12 md:mb-16", narrow && "max-w-2xl")}>
-            {eyebrow ? <p className="eyebrow mb-3">{eyebrow}</p> : null}
-            {title ? (
-              <h2 id={`${id}-title`} className="text-3xl font-semibold md:text-4xl">
-                {title}
-              </h2>
-            ) : null}
-            {intro ? <p className="mt-4 text-lg text-muted-foreground">{intro}</p> : null}
-          </header>
-        )}
-        {children}
-      </div>
-    </section>
+    <Column as="section" id={id} fillWidth gap="40" paddingY="80" aria-labelledby={title ? `${id}-title` : undefined} style={{ scrollMarginTop: "5rem" }}>
+      {rule ? <Line background="neutral-alpha-medium" /> : null}
+      {(eyebrow || title || intro) && (
+        <Column gap="16" maxWidth={44}>
+          {eyebrow ? (
+            <Row gap="12" vertical="center">
+              {index ? (
+                <Text as="span" variant="code-default-s" onBackground="brand-medium" className="tabular">
+                  {index}
+                </Text>
+              ) : null}
+              <Text as="span" variant="label-default-s" onBackground="neutral-weak" className="eyebrow">
+                {eyebrow}
+              </Text>
+            </Row>
+          ) : null}
+          {title ? (
+            <Heading as="h2" id={`${id}-title`} variant="display-default-xs" wrap="balance">
+              {title}
+            </Heading>
+          ) : null}
+          {intro ? (
+            <Text as="p" variant="body-default-l" onBackground="neutral-weak">
+              {intro}
+            </Text>
+          ) : null}
+        </Column>
+      )}
+      {children}
+    </Column>
   )
 }

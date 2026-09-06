@@ -1,17 +1,18 @@
 import type { Founder } from "./schema"
 
 export const founder = {
+  index: "04",
   eyebrow: "Founder",
-  title: "Sindhu Softworks is the company. Tushar is who you'll work with.",
+  title: "Sindhu Softworks is the company. Tushar Kendre is the engineer you will work with.",
   person: {
     name: "Tushar Kendre",
     title: "Proprietor and Principal Engineer",
     headshot: "/headshot.jpg",
     headshotAlt: "Portrait of Tushar Kendre",
     bio: [
-      "Tushar spent five years shipping 0-to-1 systems in the US before moving back to India and registering Sindhu Softworks in 2026. At Brainwave Science they built real-time EEG inference platforms for P300 concealed-information testing, cut inference latency by 70%, and led a team of ten through deployments to India's National Investigation Agency and Dubai Police under six-year government contracts.",
-      "At Patient First.AI they architected the V2 rebuild of a HIPAA vaccination-compliance platform: a DAG-based rules engine, a document OCR pipeline, and a zero-downtime migration that took the product from one university to four. They still lead that work today, now through Sindhu Softworks, alongside AI evaluation programs for LinkedIn and independent builds.",
-      "They hold an MS in Computer Science from Boston University and a B.Tech in Aerospace Engineering from IIT Kanpur, published on EEG signal classification at IEEE NCC, and won a student award at the 2021 BCI Meeting for an SSVEP robot controller that hit 99.1% accuracy on live brain signals.",
+      "Tushar spent five years building first-release systems in the United States before returning to India and registering Sindhu Softworks in 2026. At Brainwave Science, Tushar built real-time EEG inference platforms for P300 concealed-information testing, reduced inference latency by 70 percent, and led a team of ten through deployments to India's National Investigation Agency and Dubai Police under six-year government contracts.",
+      "At Patient First.AI, Tushar architected the V2 rebuild of a HIPAA vaccination-compliance platform: a graph-based rules engine, a document OCR pipeline, and a migration with no downtime that took the product from one university to four. That work continues today through Sindhu Softworks, alongside AI evaluation programs for LinkedIn and independent builds.",
+      "Tushar holds an MS in Computer Science from Boston University and a B.Tech in Aerospace Engineering from IIT Kanpur, has published on EEG signal classification at IEEE NCC, and received a student award at the 2021 BCI Meeting for an SSVEP robot controller that reached 99.1 percent accuracy on live brain signals.",
     ],
     credentials: [
       { label: "MS Computer Science", org: "Boston University", year: "2025" },

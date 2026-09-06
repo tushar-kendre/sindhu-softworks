@@ -2,8 +2,7 @@
 
 import { useMediaQuery } from "./use-media-query"
 
-export const MOBILE_BREAKPOINT = 768
-
+/** Matches Once UI's `s` breakpoint (below 768px). */
 export function useIsMobile(): boolean {
-  return useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+  return useMediaQuery("(max-width: 767px)")
 }

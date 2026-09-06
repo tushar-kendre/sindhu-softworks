@@ -1,29 +1,14 @@
+import "@once-ui-system/core/css/styles.css"
+import "@once-ui-system/core/css/tokens.css"
+import "@/resources/custom.css"
+
 import type { Metadata, Viewport } from "next"
-import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
+import { Column, ThemeInit } from "@once-ui-system/core"
+import { Providers } from "@/components/providers"
+import { AppToaster } from "@/components/layout/app-toaster"
 import { site } from "@/content/site"
 import { jsonLd } from "@/lib/seo"
-import "./globals.css"
-
-const display = Fraunces({
-  subsets: ["latin"],
-  axes: ["opsz"],
-  variable: "--font-display",
-  display: "swap",
-})
-const sans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-sans",
-  display: "swap",
-})
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-})
+import { dataStyle, fonts, style } from "@/resources/once-ui.config"
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -44,21 +29,38 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAF8F3" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A1220" },
+    { media: "(prefers-color-scheme: light)", color: "#f9faff" },
+    { media: "(prefers-color-scheme: dark)", color: "#080811" },
   ],
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${display.variable} ${sans.variable} ${mono.variable}`}>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <html lang="en" suppressHydrationWarning className={`${fonts.heading.variable} ${fonts.body.variable} ${fonts.label.variable} ${fonts.code.variable}`}>
+      <head>
+        <ThemeInit
+          config={{
+            theme: style.theme,
+            brand: style.brand,
+            accent: style.accent,
+            neutral: style.neutral,
+            solid: style.solid,
+            "solid-style": style.solidStyle,
+            border: style.border,
+            surface: style.surface,
+            transition: style.transition,
+            scaling: style.scaling,
+            "viz-style": dataStyle.variant,
+          }}
+        />
+      </head>
+      <Providers>
+        <Column as="body" background="page" fillWidth margin="0" padding="0">
           {children}
-          <Toaster richColors position="bottom-center" />
-        </ThemeProvider>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
-      </body>
+          <AppToaster />
+        </Column>
+      </Providers>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
     </html>
   )
 }

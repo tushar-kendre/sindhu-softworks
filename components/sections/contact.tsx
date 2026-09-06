@@ -1,44 +1,44 @@
-import { Clock, Mail, MapPin } from "lucide-react"
+import { Column, Grid, Icon, Row, Text } from "@once-ui-system/core"
 import { ContactForm } from "@/components/contact/contact-form"
 import { Section } from "@/components/layout/section"
 import { contact } from "@/content/contact"
 import { site } from "@/content/site"
 
+function Item({ icon, k, children }: { icon: "mail" | "clock" | "mapPin"; k: string; children: React.ReactNode }) {
+  return (
+    <Row gap="12" vertical="start" paddingY="12" borderBottom="neutral-alpha-weak">
+      <Icon name={icon} size="s" onBackground="brand-medium" style={{ marginTop: "0.15rem" }} />
+      <Column gap="4">
+        <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow">
+          {k}
+        </Text>
+        <Text as="div" variant="body-default-s">
+          {children}
+        </Text>
+      </Column>
+    </Row>
+  )
+}
+
 export function Contact() {
   return (
-    <Section id="contact" eyebrow={contact.eyebrow} title={contact.title} intro={contact.intro}>
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-        <ul className="space-y-6 text-sm">
-          <li className="flex gap-3">
-            <Mail className="mt-0.5 h-4 w-4 text-primary" aria-hidden />
-            <div>
-              <p className="font-medium">Email</p>
-              <a className="text-muted-foreground underline-offset-4 hover:underline" href={`mailto:${site.email}`}>
-                {site.email}
-              </a>
-            </div>
-          </li>
-          <li className="flex gap-3">
-            <Clock className="mt-0.5 h-4 w-4 text-primary" aria-hidden />
-            <div>
-              <p className="font-medium">Response time</p>
-              <p className="text-muted-foreground">We reply {site.responseTime}. Calls are scheduled across IST and US Eastern.</p>
-            </div>
-          </li>
-          <li className="flex gap-3">
-            <MapPin className="mt-0.5 h-4 w-4 text-primary" aria-hidden />
-            <div>
-              <p className="font-medium">Based in</p>
-              <p className="text-muted-foreground">
-                {site.address.city}, {site.address.country}. Working with teams in India and the United States.
-              </p>
-            </div>
-          </li>
-        </ul>
-        <div className="relative rounded-xl border bg-card p-6 shadow-sm md:p-8">
+    <Section id="contact" index={contact.index} eyebrow={contact.eyebrow} title={contact.title} intro={contact.intro}>
+      <Grid columns="5" gap="48" s={{ columns: 1, gap: "32" }}>
+        <Column gap="0" style={{ gridColumn: "span 2" }}>
+          <Item icon="mail" k="Email">
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </Item>
+          <Item icon="clock" k="Response time">
+            Replies {site.responseTime}. Calls are scheduled across IST and US Eastern.
+          </Item>
+          <Item icon="mapPin" k="Based in">
+            {site.address.city}, {site.address.country}. Working with teams in India and the United States.
+          </Item>
+        </Column>
+        <Column style={{ gridColumn: "span 3" }} background="surface" border="neutral-alpha-medium" radius="s" padding="24">
           <ContactForm />
-        </div>
-      </div>
+        </Column>
+      </Grid>
     </Section>
   )
 }

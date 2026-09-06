@@ -1,70 +1,98 @@
-import { Check } from "lucide-react"
+import { Column, Grid, Icon, Line, Row, Tag, Text } from "@once-ui-system/core"
 import { Section } from "@/components/layout/section"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { services } from "@/content/services"
+
+function Key({ children }: { children: React.ReactNode }) {
+  return (
+    <Text as="p" variant="label-default-s" onBackground="neutral-weak" className="eyebrow">
+      {children}
+    </Text>
+  )
+}
 
 export function Services() {
   return (
-    <Section id="services" eyebrow={services.eyebrow} title={services.title} intro={services.intro}>
-      <div className="grid gap-6 lg:grid-cols-3">
+    <Section id="services" index={services.index} eyebrow={services.eyebrow} title={services.title} intro={services.intro}>
+      <Column gap="0">
         {services.items.map((s, i) => (
-          <Card key={s.id} id={`service-${s.id}`} className="flex flex-col">
-            <CardHeader>
-              <p className="font-mono text-xs text-muted-foreground">0{i + 1}</p>
-              <CardTitle className="text-xl leading-snug">{s.title}</CardTitle>
-              <CardDescription className="text-base">{s.oneLiner}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-1 flex-col gap-6">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">What you get</p>
-                <ul className="mt-3 space-y-2 text-sm">
-                  {s.youGet.map((line) => (
-                    <li key={line} className="flex gap-2">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-                      <span>{line}</span>
-                    </li>
+          <Column key={s.id} id={`service-${s.id}`} gap="0" borderTop="neutral-alpha-medium" paddingY="40">
+            <Grid columns="5" gap="40" s={{ columns: 1, gap: "24" }}>
+              <Column gap="16" style={{ gridColumn: "span 2" }}>
+                <Text as="p" variant="code-default-s" onBackground="brand-medium" className="tabular">
+                  {services.index}.{i + 1}
+                </Text>
+                <Text as="h3" variant="heading-default-xl" style={{ fontFamily: "var(--font-heading)", fontSize: "1.75rem", lineHeight: 1.15 }}>
+                  {s.title}
+                </Text>
+                <Text as="p" variant="body-default-m" onBackground="neutral-weak">
+                  {s.oneLiner}
+                </Text>
+                <Row gap="8" wrap paddingTop="8">
+                  {s.stack.map((t) => (
+                    <Tag key={t} size="s" variant="neutral" label={t} />
                   ))}
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Typical shape</p>
-                <p className="mt-2 text-sm">{s.shape}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Good fit if</p>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-                  {s.goodFitIf.map((line) => (
-                    <li key={line}>{line}</li>
-                  ))}
-                </ul>
-              </div>
-              <ul className="mt-auto flex flex-wrap gap-1.5 pt-2" aria-label="Stack">
-                {s.stack.map((t) => (
-                  <li key={t}>
-                    <Badge variant="secondary" className="font-mono text-[11px] font-normal">
-                      {t}
-                    </Badge>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                </Row>
+              </Column>
 
-      <div className="mt-16">
-        <h3 className="text-2xl">{services.principlesTitle}</h3>
-        <ol className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              <Grid columns="2" gap="32" s={{ columns: 1 }} style={{ gridColumn: "span 3" }}>
+                <Column gap="12">
+                  <Key>Deliverables</Key>
+                  <Column as="ul" gap="8" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                    {s.youGet.map((line) => (
+                      <Row as="li" key={line} gap="8" vertical="start">
+                        <Icon name="check" size="xs" onBackground="brand-medium" style={{ marginTop: "0.2rem" }} />
+                        <Text as="span" variant="body-default-s">
+                          {line}
+                        </Text>
+                      </Row>
+                    ))}
+                  </Column>
+                </Column>
+                <Column gap="24">
+                  <Column gap="8">
+                    <Key>Engagement shape</Key>
+                    <Text as="p" variant="body-default-s">
+                      {s.shape}
+                    </Text>
+                  </Column>
+                  <Column gap="8">
+                    <Key>Suited when</Key>
+                    <Column as="ul" gap="8" style={{ margin: 0, paddingLeft: "1rem" }}>
+                      {s.goodFitIf.map((line) => (
+                        <Text as="li" key={line} variant="body-default-s" onBackground="neutral-weak">
+                          {line}
+                        </Text>
+                      ))}
+                    </Column>
+                  </Column>
+                </Column>
+              </Grid>
+            </Grid>
+          </Column>
+        ))}
+      </Column>
+
+      <Column gap="24" paddingTop="16">
+        <Line background="neutral-alpha-medium" />
+        <Text as="h3" variant="heading-default-l" style={{ fontFamily: "var(--font-heading)", fontSize: "1.5rem" }}>
+          {services.principlesTitle}
+        </Text>
+        <Grid columns="4" gap="32" s={{ columns: 1 }} m={{ columns: 2 }}>
           {services.principles.map((p, i) => (
-            <li key={p.title} className="border-t pt-4">
-              <p className="font-mono text-xs text-primary">0{i + 1}</p>
-              <h4 className="mt-1 font-semibold">{p.title}</h4>
-              <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
-            </li>
+            <Column key={p.title} gap="8" borderTop="neutral-alpha-weak" paddingTop="12">
+              <Text as="p" variant="code-default-xs" onBackground="brand-medium" className="tabular">
+                P{i + 1}
+              </Text>
+              <Text as="h4" variant="label-default-m" style={{ fontWeight: 600 }}>
+                {p.title}
+              </Text>
+              <Text as="p" variant="body-default-s" onBackground="neutral-weak">
+                {p.body}
+              </Text>
+            </Column>
           ))}
-        </ol>
-      </div>
+        </Grid>
+      </Column>
     </Section>
   )
 }

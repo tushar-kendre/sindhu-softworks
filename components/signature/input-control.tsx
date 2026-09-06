@@ -1,69 +1,44 @@
 "use client"
 
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
+import { SegmentedControl, Slider, Switch } from "@once-ui-system/core"
 import { formatValue } from "@/lib/rules/engine"
 import type { InputDef, InputValue } from "@/lib/rules/types"
-import { cn } from "@/lib/utils"
 
-type Props = {
-  def: InputDef
-  value: InputValue
-  onChange: (v: InputValue) => void
-  compact?: boolean
-  id?: string
-}
+type Props = { def: InputDef; value: InputValue; onChange: (v: InputValue) => void; compact?: boolean; id?: string }
 
 export function InputControl({ def, value, onChange, compact = false, id }: Props) {
-  const labelId = `${id ?? def.id}-label`
   const c = def.control
+  const labelId = `${id ?? def.id}-label`
 
   if (c.type === "segmented") {
     return (
-      <div role="radiogroup" aria-labelledby={labelId} className={cn("inline-flex rounded-md border bg-background p-0.5", compact ? "text-xs" : "text-sm")}>
-        {c.options.map((o) => {
-          const active = value === o.value
-          return (
-            <button
-              key={o.value}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() => onChange(o.value)}
-              className={cn(
-                "min-w-8 rounded px-2 py-0.5 font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                active ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {o.label}
-            </button>
-          )
-        })}
+      <div aria-labelledby={labelId}>
+        <SegmentedControl
+          compact
+          fillWidth={false}
+          buttons={c.options.map((o) => ({ label: o.label, value: String(o.value) }))}
+          selected={String(value)}
+          onToggle={(v) => onChange(Number(v))}
+        />
       </div>
     )
   }
 
   if (c.type === "toggle") {
-    return (
-      <div className="flex items-center gap-2">
-        <Switch aria-labelledby={labelId} checked={Boolean(value)} onCheckedChange={(v) => onChange(v)} className={compact ? "scale-90" : undefined} />
-        <span className={cn("font-mono text-muted-foreground", compact ? "text-xs" : "text-sm")}>{value ? "yes" : "no"}</span>
-      </div>
-    )
+    return <Switch isChecked={Boolean(value)} onToggle={() => onChange(!value)} ariaLabel={def.label} label={compact ? undefined : formatValue(value, def)} reverse={false} />
   }
 
   return (
-    <div className={cn("flex items-center gap-3", compact ? "w-full" : "w-full")}>
-      <Slider
-        aria-labelledby={labelId}
-        min={c.min}
-        max={c.max}
-        step={c.step}
-        value={[Number(value)]}
-        onValueChange={([v]) => onChange(v)}
-        className="flex-1"
-      />
-      <output className={cn("shrink-0 font-mono tabular-nums", compact ? "w-16 text-right text-xs" : "w-20 text-right text-sm")}>{formatValue(value, def)}</output>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", width: "100%" }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <Slider min={c.min} max={c.max} step={c.step} value={Number(value)} onChange={(v) => onChange(v)} label={def.label} />
+      </div>
+      <output
+        aria-live="off"
+        style={{ fontFamily: "var(--font-code)", fontSize: compact ? "0.6875rem" : "0.8125rem", fontVariantNumeric: "tabular-nums", minWidth: compact ? "3.5rem" : "4.5rem", textAlign: "right" }}
+      >
+        {formatValue(value, def)}
+      </output>
     </div>
   )
 }

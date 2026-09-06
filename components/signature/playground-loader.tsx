@@ -3,16 +3,9 @@
 import dynamic from "next/dynamic"
 import { useEffect, useRef, useState } from "react"
 
-const RulesPlayground = dynamic(() => import("./rules-playground").then((m) => m.RulesPlayground), {
-  ssr: false,
-  loading: () => null,
-})
+const RulesPlayground = dynamic(() => import("./rules-playground").then((m) => m.RulesPlayground), { ssr: false, loading: () => null })
 
-/**
- * Keeps the server-rendered static graph on screen until the interactive one is
- * both near the viewport and downloaded, so the React Flow chunk never competes
- * with first paint and the swap causes no layout shift.
- */
+/** Keeps the static graph on screen until the interactive one is near the viewport and downloaded. Zero layout shift. */
 export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
@@ -21,9 +14,6 @@ export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    // Belt and braces: load when near the viewport, or once the browser has been idle
-    // for a while (covers browsers where the observer never fires, e.g. hidden tabs).
-    // The long timeout keeps the React Flow chunk out of the first-load critical path.
     const hasRic = typeof window.requestIdleCallback === "function"
     const idle = hasRic ? window.requestIdleCallback(() => setNear(true), { timeout: 8000 }) : window.setTimeout(() => setNear(true), 8000)
     const cancelIdle = () => (hasRic ? window.cancelIdleCallback(idle) : window.clearTimeout(idle))
@@ -45,10 +35,10 @@ export function PlaygroundLoader({ fallback }: { fallback: React.ReactNode }) {
   }, [])
 
   return (
-    <div ref={ref} className="relative">
-      {!ready ? <div className="h-[470px] w-full p-2">{fallback}</div> : null}
+    <div ref={ref} style={{ position: "relative" }}>
+      {!ready ? <div style={{ height: 470, width: "100%", padding: "0.5rem" }}>{fallback}</div> : null}
       {near ? (
-        <div className={ready ? undefined : "absolute inset-0 opacity-0"} aria-hidden={!ready}>
+        <div style={ready ? undefined : { position: "absolute", inset: 0, opacity: 0 }} aria-hidden={!ready}>
           <RulesPlayground onReady={() => setReady(true)} />
         </div>
       ) : null}

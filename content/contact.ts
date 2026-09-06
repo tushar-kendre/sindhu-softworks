@@ -1,8 +1,9 @@
 export const contact = {
+  index: "05",
   eyebrow: "Contact",
-  title: "Tell us what you're building",
+  title: "Describe what you are building",
   intro:
-    "A few sentences is enough. You'll get a reply from Tushar, not a form-bot, and a first call is free.",
+    "A few sentences are enough. Replies come from Tushar directly, and an initial call carries no charge.",
   engagementTypes: [
     { value: "product-engineering", label: "Product engineering (regulated domain)" },
     { value: "ai-evaluation", label: "AI evaluation or data program" },
@@ -16,7 +17,7 @@ export const contact = {
     { value: "20k-50k", label: "$20k – $50k / ₹17L – ₹42L" },
     { value: "gt-50k", label: "Above $50k / ₹42L" },
   ],
-  successTitle: "Got it.",
-  successBody: "Your message is on its way. Expect a reply within two business days.",
-  errorBody: "The form could not send. You can email us directly instead:",
+  successTitle: "Message received.",
+  successBody: "Expect a reply within two business days.",
+  errorBody: "The form could not be sent. Email directly instead:",
 }

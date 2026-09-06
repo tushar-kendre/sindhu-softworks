@@ -1,0 +1,83 @@
+/* Sindhu Softworks — design tokens layered over Once UI. See DESIGN.md. */
+:root {
+  /* Instrument Serif ships one weight: never let display/heading synthesise light or bold. */
+  --font-weight-display-default: 400;
+  --font-weight-display-medium: 400;
+  --font-weight-display-normal: 400;
+  --font-weight-display-strong: 400;
+  --font-weight-heading-default: 400;
+  --font-weight-heading-strong: 400;
+  --font-weight-label-strong: 600;
+
+  /* Slightly tighter display sizes; the serif reads large. */
+  --font-size-display-multiplier: 0.95;
+  --line-height-display-multiplier: 1;
+
+  /* Thin, high-contrast rules by default. */
+  --default-border: var(--neutral-border-medium);
+
+  /* River Teal (brand) */
+  --scheme-brand-100: #060c0c;
+  --scheme-brand-200: #0a1617;
+  --scheme-brand-300: #123f45;
+  --scheme-brand-400: #14565f;
+  --scheme-brand-500: #166e79;
+  --scheme-brand-600: #168998;
+  --scheme-brand-700: #13a2b5;
+  --scheme-brand-800: #5bccdb;
+  --scheme-brand-900: #83dfeb;
+  --scheme-brand-1000: #b7eef5;
+  --scheme-brand-1100: #d7f4f8;
+  --scheme-brand-1200: #eefafb;
+  --scheme-brand-600-10: rgba(22,137,152,0.1);
+  --scheme-brand-600-15: rgba(22,137,152,0.15);
+  --scheme-brand-600-30: rgba(22,137,152,0.3);
+  --scheme-brand-600-50: rgba(22,137,152,0.5);
+
+  /* Terracotta (accent) */
+  --scheme-accent-100: #110906;
+  --scheme-accent-200: #24130d;
+  --scheme-accent-300: #6f2a13;
+  --scheme-accent-400: #993514;
+  --scheme-accent-500: #c34318;
+  --scheme-accent-600: #e5673d;
+  --scheme-accent-700: #ee9375;
+  --scheme-accent-800: #f4bfae;
+  --scheme-accent-900: #f7d4c8;
+  --scheme-accent-1000: #f9e7e1;
+  --scheme-accent-1100: #faefeb;
+  --scheme-accent-1200: #fbf7f6;
+  --scheme-accent-600-10: rgba(229,103,61,0.1);
+  --scheme-accent-600-15: rgba(229,103,61,0.15);
+  --scheme-accent-600-30: rgba(229,103,61,0.3);
+  --scheme-accent-600-50: rgba(229,103,61,0.5);
+}
+
+/* Utilities that Once UI does not provide as props. Keep this list short. */
+.eyebrow {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+.serif-italic {
+  font-style: italic;
+}
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0.5rem;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 0.5rem;
+}
+html {
+  scroll-padding-top: 5rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
