@@ -43,6 +43,7 @@ Section numbering: every major section carries a mono index (`01`, `02` …) in 
 
 - Brand: River Teal (custom scale, `--scheme-brand-*`). Used for keys, links, the active state, pass states.
 - Accent: Terracotta (custom scale, `--scheme-accent-*`). Used sparingly: one CTA emphasis, edited values, the single highlighted element.
+- Logo streams: teal, terracotta, ochre (`--logo-stream-1..3`, theme-tuned in `custom.css`). Ochre appears nowhere else on the page.
 - Neutral: `slate`.
 - Semantic states in the playground: `success` / `danger` / `warning` tokens. Never the brand colour for pass/fail.
 - One accent family per section. Decoration uses `brand-*` or `neutral-*` only.

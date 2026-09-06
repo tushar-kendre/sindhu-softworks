@@ -1,18 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <style>
-    .p { stroke: #137A87; fill: #137A87; }
+    .s1 { stroke: #137A87; fill: #137A87; }
+    .s2 { stroke: #C4603F; fill: #C4603F; }
+    .s3 { stroke: #B98A1F; fill: #B98A1F; }
     .f { stroke: #0F1B2D; fill: #0F1B2D; }
     @media (prefers-color-scheme: dark) {
-      .p { stroke: #3FBBCB; fill: #3FBBCB; }
+      .s1 { stroke: #3FBBCB; fill: #3FBBCB; }
+      .s2 { stroke: #E28B68; fill: #E28B68; }
+      .s3 { stroke: #E0B44A; fill: #E0B44A; }
       .f { stroke: #E8EEF6; fill: #E8EEF6; }
     }
   </style>
-  <path class="p" d="M5 8 C12 8 13 16 19 16" stroke-width="2.6" fill="none"/>
-  <path class="p" d="M5 16 C10 16 14 16 19 16" stroke-width="2.6" fill="none"/>
-  <path class="p" d="M5 24 C12 24 13 16 19 16" stroke-width="2.6" fill="none"/>
+  <path class="s1" d="M5 8 C12 8 13 16 19 16" stroke-width="2.6" fill="none"/>
+  <path class="s2" d="M5 16 C10 16 14 16 19 16" stroke-width="2.6" fill="none"/>
+  <path class="s3" d="M5 24 C12 24 13 16 19 16" stroke-width="2.6" fill="none"/>
   <path class="f" d="M19 16 H28" stroke-width="4" fill="none"/>
-  <circle class="p" cx="5" cy="8" r="2.3" stroke="none"/>
-  <circle class="p" cx="5" cy="16" r="2.3" stroke="none"/>
-  <circle class="p" cx="5" cy="24" r="2.3" stroke="none"/>
+  <circle class="s1" cx="5" cy="8" r="2.3" stroke="none"/>
+  <circle class="s2" cx="5" cy="16" r="2.3" stroke="none"/>
+  <circle class="s3" cx="5" cy="24" r="2.3" stroke="none"/>
   <circle class="f" cx="19" cy="16" r="3.8" stroke="none"/>
 </svg>

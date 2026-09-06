@@ -4,25 +4,34 @@
  *
  *   pnpm gen:logo
  */
-import { mkdir, writeFile } from "node:fs/promises"
+import { mkdir, readFile, writeFile } from "node:fs/promises"
+import { existsSync } from "node:fs"
+import { setDefaultResultOrder } from "node:dns"
 import path from "node:path"
 import opentype from "opentype.js"
 import sharp from "sharp"
-import { BRAND, markSvg } from "../components/brand/logo-paths"
+import { BRAND, STREAMS, markSvg } from "../components/brand/logo-paths"
 
 const OUT = path.resolve("public/logo")
 
-async function googleFont(family: string, weight: number, text: string): Promise<opentype.Font> {
-  // No browser UA → Google serves TTF, which opentype.js can parse (browsers get woff2).
-  const css = await (
-    await fetch(`https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}&text=${encodeURIComponent(text)}`, {
-      headers: { "User-Agent": "curl/8" },
-    })
-  ).text()
-  const m = css.match(/src:\s*url\(([^)]+)\)/)
-  if (!m) throw new Error(`No font url for ${family}: ${css.slice(0, 200)}`)
-  const buf = await (await fetch(m[1])).arrayBuffer()
-  return opentype.parse(buf)
+const FONT_CACHE = path.resolve("assets/fonts")
+// Node's happy-eyeballs can stall on IPv6 here; prefer IPv4.
+setDefaultResultOrder("ipv4first")
+
+/** Loads a cached TTF from assets/fonts (Plex is a "SOFTWORKS" subset from the Google CSS API; opentype.js cannot parse the full file). Falls back to the google/fonts repository. */
+async function googleFont(repoPath: string): Promise<opentype.Font> {
+  await mkdir(FONT_CACHE, { recursive: true })
+  const cached = path.join(FONT_CACHE, path.basename(repoPath))
+  let buf: Buffer
+  if (existsSync(cached)) {
+    buf = await readFile(cached)
+  } else {
+    const res = await fetch(`https://raw.githubusercontent.com/google/fonts/main/${repoPath}`, { signal: AbortSignal.timeout(30000) })
+    if (!res.ok) throw new Error(`Font download failed: ${repoPath} → ${res.status}`)
+    buf = Buffer.from(await res.arrayBuffer())
+    await writeFile(cached, buf)
+  }
+  return opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
 }
 
 function textPath(font: opentype.Font, text: string, x: number, y: number, size: number, tracking = 0): { d: string; width: number } {
@@ -44,33 +53,33 @@ async function main() {
   await mkdir(OUT, { recursive: true })
 
   // Marks
-  const light = markSvg({ primary: BRAND.teal, foreground: BRAND.deep, background: BRAND.paper })
-  const dark = markSvg({ primary: BRAND.tealDark, foreground: "#E8EEF6", background: BRAND.deepDark })
+  const light = markSvg({ primary: STREAMS.light, foreground: BRAND.deep, background: BRAND.paper })
+  const dark = markSvg({ primary: STREAMS.dark, foreground: "#E8EEF6", background: BRAND.deepDark })
   const mono = markSvg({ primary: "currentColor", foreground: "currentColor", port: false })
-  const tiny = markSvg({ primary: BRAND.teal, foreground: BRAND.deep, port: false })
+  const tiny = markSvg({ primary: STREAMS.light, foreground: BRAND.deep, port: false })
   await writeFile(path.join(OUT, "mark.svg"), light)
   await writeFile(path.join(OUT, "mark-dark.svg"), dark)
   await writeFile(path.join(OUT, "mark-mono.svg"), mono)
   await writeFile(path.join(OUT, "mark-16.svg"), tiny)
 
   // Raster marks (with a rounded paper/deep-water background so they work as avatars)
-  const bgLight = markSvg({ primary: BRAND.teal, foreground: BRAND.deep, background: BRAND.paper, extra: `<rect width="32" height="32" rx="7" fill="${BRAND.paper}"/>` })
+  const bgLight = markSvg({ primary: STREAMS.light, foreground: BRAND.deep, background: BRAND.paper, extra: `<rect width="32" height="32" rx="7" fill="${BRAND.paper}"/>` })
   await sharp(Buffer.from(bgLight)).resize(512, 512).png().toFile(path.join(OUT, "mark-512.png"))
   await sharp(Buffer.from(bgLight)).resize(180, 180).png().toFile(path.resolve("app/apple-icon.png"))
 
   // Lockups with outlined wordmark
-  const fraunces = await googleFont("Fraunces", 600, "Sindhu")
-  const plex = await googleFont("IBM Plex Sans", 500, "SOFTWORKS")
+  const serif = await googleFont("ofl/instrumentserif/InstrumentSerif-Regular.ttf")
+  const plex = await googleFont("ofl/ibmplexsans/IBMPlexSans-Medium.ttf")
   const markSize = 64
   const gap = 18
-  const nameSize = 44
+  const nameSize = 50
   const subSize = 13.5
-  const name = textPath(fraunces, "Sindhu", markSize + gap, 40, nameSize, -0.01)
+  const name = textPath(serif, "Sindhu", markSize + gap, 42, nameSize, -0.01)
   const sub = textPath(plex, "SOFTWORKS", markSize + gap + 1, 60, subSize, 0.18)
   const width = Math.ceil(markSize + gap + Math.max(name.width, sub.width) + 4)
   const height = 64
 
-  const lockup = (primary: string, foreground: string, muted: string, background: string) => {
+  const lockup = (primary: readonly [string, string, string], foreground: string, muted: string, background: string) => {
     const mark = markSvg({ primary, foreground, background }).replace(/<svg[^>]*>/, "").replace("</svg>", "")
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" fill="none" stroke-linecap="round" stroke-linejoin="round">
 <g transform="scale(${markSize / 32})">${mark}</g>
@@ -78,13 +87,13 @@ async function main() {
 <path d="${sub.d}" fill="${muted}"/>
 </svg>`
   }
-  await writeFile(path.join(OUT, "lockup-light.svg"), lockup(BRAND.teal, BRAND.deep, "#5B6678", BRAND.paper))
-  await writeFile(path.join(OUT, "lockup-dark.svg"), lockup(BRAND.tealDark, "#E8EEF6", "#8FA0B8", BRAND.deepDark))
+  await writeFile(path.join(OUT, "lockup-light.svg"), lockup(STREAMS.light, BRAND.deep, "#5B6678", BRAND.paper))
+  await writeFile(path.join(OUT, "lockup-dark.svg"), lockup(STREAMS.dark, "#E8EEF6", "#8FA0B8", BRAND.deepDark))
 
   // Social card sized lockup PNGs
   const card = (bg: string, svg: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="${bg}"/><g transform="translate(${(1200 - width * 2.4) / 2} ${(630 - height * 2.4) / 2}) scale(2.4)">${svg.replace(/<svg[^>]*>/, "").replace("</svg>", "")}</g></svg>`
-  await sharp(Buffer.from(card(BRAND.paper, lockup(BRAND.teal, BRAND.deep, "#5B6678", BRAND.paper)))).png().toFile(path.join(OUT, "lockup-1200x630-light.png"))
-  await sharp(Buffer.from(card(BRAND.deepDark, lockup(BRAND.tealDark, "#E8EEF6", "#8FA0B8", BRAND.deepDark)))).png().toFile(path.join(OUT, "lockup-1200x630-dark.png"))
+  await sharp(Buffer.from(card(BRAND.paper, lockup(STREAMS.light, BRAND.deep, "#5B6678", BRAND.paper)))).png().toFile(path.join(OUT, "lockup-1200x630-light.png"))
+  await sharp(Buffer.from(card(BRAND.deepDark, lockup(STREAMS.dark, "#E8EEF6", "#8FA0B8", BRAND.deepDark)))).png().toFile(path.join(OUT, "lockup-1200x630-dark.png"))
 
   await writeFile(
     path.join(OUT, "README.md"),
@@ -102,7 +111,7 @@ Generated by \`pnpm gen:logo\` from \`components/brand/logo-paths.ts\`. Do not h
 | lockup-1200x630-*.png | Social card sized lockups |
 
 Rules: clear space around the mark = one confluence-node diameter. Minimum mark size 16 px; minimum lockup width 120 px.
-Colours: River Teal #137A87 (light) / #3FBBCB (dark); Deep Water #0F1B2D / #0A1220; Paper #FAF8F3; Terracotta #C4603F accent only. The mark is never terracotta.
+Colours: streams top to bottom River Teal #137A87 / #3FBBCB, Terracotta #C4603F / #E28B68, Ochre #B98A1F / #E0B44A (light / dark); channel and node Deep Water #0F1B2D on light, #E8EEF6 on dark; Paper #FAF8F3.
 `,
   )
   console.log(`wrote brand files to ${OUT} (lockup ${width}×${height})`)

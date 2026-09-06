@@ -17,17 +17,35 @@ export const BRAND = {
   deepDark: "#0A1220",
   paper: "#FAF8F3",
   terracotta: "#C4603F",
+  terracottaDark: "#E28B68",
+  ochre: "#B98A1F",
+  ochreDark: "#E0B44A",
 } as const
+
+/** The three streams, top to bottom: teal, terracotta, ochre. The channel and node stay neutral. */
+export const STREAMS = {
+  light: [BRAND.teal, BRAND.terracotta, BRAND.ochre] as const,
+  dark: [BRAND.tealDark, BRAND.terracottaDark, BRAND.ochreDark] as const,
+}
 
 /**
  * Standalone SVG string for files (favicon, exports). `port` draws the inner dot; omit below 24px.
  * `primary`/`foreground` are colours; pass "currentColor" for a mono mark.
  */
-export function markSvg(opts: { primary: string; foreground: string; background?: string; port?: boolean; size?: number; extra?: string }): string {
+export function markSvg(opts: {
+  /** one colour for all streams, or one per stream (top, middle, bottom) */
+  primary: string | readonly [string, string, string]
+  foreground: string
+  background?: string
+  port?: boolean
+  size?: number
+  extra?: string
+}): string {
   const { primary, foreground, background, port = true, size, extra = "" } = opts
+  const colours = typeof primary === "string" ? [primary, primary, primary] : primary
   const dim = size ? ` width="${size}" height="${size}"` : ""
-  const trib = TRIBUTARIES.map((d) => `<path d="${d}" stroke="${primary}" stroke-width="${STROKE.tributary}"/>`).join("")
-  const src = SOURCES.map((s) => `<circle cx="${s.cx}" cy="${s.cy}" r="${STROKE.source}" fill="${primary}"/>`).join("")
+  const trib = TRIBUTARIES.map((d, i) => `<path d="${d}" stroke="${colours[i]}" stroke-width="${STROKE.tributary}"/>`).join("")
+  const src = SOURCES.map((s, i) => `<circle cx="${s.cx}" cy="${s.cy}" r="${STROKE.source}" fill="${colours[i]}"/>`).join("")
   const portDot = port && background ? `<circle cx="${CONFLUENCE.cx}" cy="${CONFLUENCE.cy}" r="${CONFLUENCE.port}" fill="${background}"/>` : ""
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${MARK_VIEWBOX}"${dim} fill="none" stroke-linecap="round" stroke-linejoin="round">${extra}${trib}<path d="${CHANNEL}" stroke="${foreground}" stroke-width="${STROKE.channel}"/>${src}<circle cx="${CONFLUENCE.cx}" cy="${CONFLUENCE.cy}" r="${CONFLUENCE.r}" fill="${foreground}"/>${portDot}</svg>`
 }

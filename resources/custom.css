@@ -53,6 +53,18 @@
   --scheme-accent-600-50: rgba(229,103,61,0.5);
 }
 
+/* Logo streams: teal, terracotta, ochre. Tuned per theme for contrast on the page background. */
+:root {
+  --logo-stream-1: #137a87;
+  --logo-stream-2: #c4603f;
+  --logo-stream-3: #b98a1f;
+}
+[data-theme="dark"] {
+  --logo-stream-1: #3fbbcb;
+  --logo-stream-2: #e28b68;
+  --logo-stream-3: #e0b44a;
+}
+
 /* Utilities that Once UI does not provide as props. Keep this list short. */
 .eyebrow {
   letter-spacing: 0.14em;

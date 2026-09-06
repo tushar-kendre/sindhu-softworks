@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og"
-import { BRAND, markSvg } from "@/components/brand/logo-paths"
+import { BRAND, STREAMS, markSvg } from "@/components/brand/logo-paths"
 import { site } from "@/content/site"
 
 export const alt = `${site.name} — ${site.tagline}`
@@ -33,7 +33,7 @@ export default async function OpenGraphImage() {
     plex ? { name: "IBM Plex Sans", data: plex, weight: 500 as const, style: "normal" as const } : null,
   ].filter((f): f is NonNullable<typeof f> => f !== null)
 
-  const mark = markSvg({ primary: BRAND.tealDark, foreground: "#E8EEF6", background: BRAND.deepDark, size: 96 })
+  const mark = markSvg({ primary: STREAMS.dark, foreground: "#E8EEF6", background: BRAND.deepDark, size: 96 })
   const markUrl = `data:image/svg+xml;utf8,${encodeURIComponent(mark)}`
 
   return new ImageResponse(

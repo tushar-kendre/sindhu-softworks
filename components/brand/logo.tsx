@@ -2,15 +2,17 @@ import { CHANNEL, CONFLUENCE, MARK_VIEWBOX, SOURCES, STROKE, TRIBUTARIES } from 
 
 type MarkProps = {
   size?: number
-  /** "mono" uses currentColor for everything; "duo" colours tributaries with the brand token */
-  tone?: "mono" | "duo"
+  /** "color": teal / terracotta / ochre streams (theme-aware); "mono": everything in currentColor */
+  tone?: "mono" | "color"
   port?: boolean
   title?: string
   style?: React.CSSProperties
 }
 
-export function LogoMark({ size = 32, tone = "duo", port = true, title, style }: MarkProps) {
-  const primary = tone === "duo" ? "var(--brand-on-background-strong)" : "currentColor"
+const STREAM_VARS = ["var(--logo-stream-1)", "var(--logo-stream-2)", "var(--logo-stream-3)"] as const
+
+export function LogoMark({ size = 32, tone = "color", port = true, title, style }: MarkProps) {
+  const colour = (i: number) => (tone === "color" ? STREAM_VARS[i] : "currentColor")
   return (
     <svg
       viewBox={MARK_VIEWBOX}
@@ -24,12 +26,12 @@ export function LogoMark({ size = 32, tone = "duo", port = true, title, style }:
       style={{ flexShrink: 0, ...style }}
     >
       {title ? <title>{title}</title> : null}
-      {TRIBUTARIES.map((d) => (
-        <path key={d} d={d} stroke={primary} strokeWidth={STROKE.tributary} />
+      {TRIBUTARIES.map((d, i) => (
+        <path key={d} d={d} stroke={colour(i)} strokeWidth={STROKE.tributary} />
       ))}
       <path d={CHANNEL} stroke="currentColor" strokeWidth={STROKE.channel} />
-      {SOURCES.map((s) => (
-        <circle key={s.cy} cx={s.cx} cy={s.cy} r={STROKE.source} fill={primary} />
+      {SOURCES.map((s, i) => (
+        <circle key={s.cy} cx={s.cx} cy={s.cy} r={STROKE.source} fill={colour(i)} />
       ))}
       <circle cx={CONFLUENCE.cx} cy={CONFLUENCE.cy} r={CONFLUENCE.r} fill="currentColor" />
       {port ? <circle cx={CONFLUENCE.cx} cy={CONFLUENCE.cy} r={CONFLUENCE.port} fill="var(--page-background)" /> : null}
@@ -57,7 +59,7 @@ export function Wordmark({ scale = 1 }: { scale?: number }) {
   )
 }
 
-export function LogoLockup({ scale = 1, tone = "duo" }: { scale?: number; tone?: "mono" | "duo" }) {
+export function LogoLockup({ scale = 1, tone = "color" }: { scale?: number; tone?: "mono" | "color" }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: `${0.7 * scale}rem`, color: "var(--neutral-on-background-strong)" }}>
       <LogoMark size={36 * scale} tone={tone} title="Sindhu Softworks" />
