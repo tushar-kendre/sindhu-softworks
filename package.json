@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "gen:logo": "tsx scripts/gen-logo-assets.ts"
+    "gen:logo": "tsx scripts/gen-logo-assets.ts",
+    "export:brand": "tsx scripts/export-brand-kit.ts"
   },
   "dependencies": {
     "@once-ui-system/core": "^1.8.4",
